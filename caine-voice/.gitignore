@@ -1,0 +1,11 @@
+# Secrets — never commit
+SECRETS.env
+*.secret
+
+# Per-model environments (these live on D:\AI\cache\audio\venvs, but ignore any local ones)
+.venv_*/
+
+# Logs / generated reference artifacts
+logs/
+caine_ref_f5.wav
+caine_ref_f5.txt

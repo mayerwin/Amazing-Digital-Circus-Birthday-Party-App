@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nora's Amazing Digital Circus — Party Guide</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root{
+    --bg:#160b2e; --bg2:#1f0f3d; --panel:#241144; --panel2:#2e1556;
+    --ink:#f4ecff; --muted:#bda6e6; --line:#4a2a86;
+    --magenta:#ff3ba7; --cyan:#26e6ff; --yellow:#ffd23f; --lime:#8cff5a;
+    --red:#ff4d57; --purple:#b06bff; --blue:#3ba7ff;
+    --gold:#ffcf4d;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0;}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 500px at 50% -10%, #3a1170 0%, transparent 60%),
+      radial-gradient(800px 400px at 100% 100%, #5a1140 0%, transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    padding-bottom:90px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--cyan);}
+  header.top{
+    text-align:center; padding:22px 16px 16px;
+    background:linear-gradient(180deg,#2a0f53,#160b2e);
+    border-bottom:2px solid var(--line);
+    position:relative; overflow:hidden;
+  }
+  header.top:before{
+    content:""; position:absolute; inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 26px,rgba(255,59,167,.06) 26px 52px);
+    pointer-events:none;
+  }
+  .eyes{font-size:30px; letter-spacing:6px; filter:drop-shadow(0 0 8px var(--cyan));}
+  h1{margin:6px 0 2px; font-size:23px; line-height:1.15;
+     background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));
+     -webkit-background-clip:text; background-clip:text; color:transparent;
+     text-transform:uppercase; letter-spacing:.5px;}
+  .sub{color:var(--muted); font-size:13px; margin-top:2px;}
+  .when{display:inline-block; margin-top:10px; font-size:12.5px; color:#160b2e;
+        background:var(--yellow); padding:4px 12px; border-radius:20px; font-weight:700;}
+
+  /* tab bar */
+  nav.tabs{
+    position:sticky; top:0; z-index:50; display:flex; overflow-x:auto;
+    background:rgba(22,11,46,.96); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line); scrollbar-width:none;
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  .sonosbar{display:flex; align-items:center; justify-content:center; gap:10px 18px; flex-wrap:wrap;
+    padding:11px 16px; background:#241144; border-bottom:2px solid var(--magenta); color:#ece0ff; font-size:14px;}
+  .sonosbar .small{color:#b9a6e8;}
+  .sonosbar-on{font-weight:800; cursor:pointer; display:inline-flex; align-items:center;}
+  .sonosbar-on input{width:20px; height:20px; vertical-align:-4px; margin-right:8px; accent-color:var(--magenta); cursor:pointer;}
+  .sonosbar-vol{display:flex; align-items:center; gap:9px;}
+  .sonosbar-vol input[type=range]{width:150px; accent-color:var(--magenta);}
+  #sonosVolLblTop{color:var(--yellow); min-width:42px; text-align:right; font-weight:800;}
+  #sonosStatusTop{padding:2px 9px; border-radius:9px; background:rgba(255,255,255,.08);}
+  .sonosbar.son #sonosStatusTop{background:rgba(91,224,160,.22); color:#7df0c0;}
+  nav.tabs button{
+    flex:0 0 auto; background:none; border:none; color:var(--muted);
+    font-size:13px; font-weight:600; padding:13px 14px; cursor:pointer;
+    border-bottom:3px solid transparent; white-space:nowrap;
+  }
+  nav.tabs button.active{color:var(--ink); border-bottom-color:var(--magenta);}
+
+  main{padding:16px; max-width:720px; margin:0 auto;}
+  section{display:none;} section.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  h2{font-size:18px; margin:18px 0 10px; color:var(--cyan);
+     display:flex; align-items:center; gap:8px;}
+  h2 .ic{font-size:20px;}
+  h3{font-size:15px; margin:14px 0 6px; color:var(--yellow);}
+  p{margin:8px 0;}
+  .muted{color:var(--muted);} .small{font-size:12.5px;}
+
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));
+        border:1px solid var(--line); border-radius:16px; padding:14px 14px;
+        margin:12px 0; box-shadow:0 6px 18px rgba(0,0,0,.25);}
+  .card.flush{padding:0; overflow:hidden;}
+
+  /* schedule */
+  .slot{display:flex; gap:12px; padding:13px 14px; border-bottom:1px solid var(--line);}
+  .slot:last-child{border-bottom:none;}
+  .slot .time{flex:0 0 64px; font-weight:800; color:var(--yellow); font-size:13.5px; padding-top:1px;}
+  .slot .body{flex:1;}
+  .slot .body .t{font-weight:700; font-size:15px;}
+  .slot .body .d{color:var(--muted); font-size:13px; margin-top:2px;}
+  .tag{display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px;
+       border-radius:20px; margin-right:5px; margin-top:6px;}
+  .tag.water{background:#0e3a52; color:var(--cyan);}
+  .tag.food{background:#4a2a10; color:var(--yellow);}
+  .tag.main{background:#4a1030; color:var(--magenta);}
+  .tag.calm{background:#10331f; color:var(--lime);}
+  .tag.flex{background:#2e2540; color:var(--muted);}
+
+  /* bilingual blocks */
+  .say{border-left:3px solid var(--magenta); padding:2px 0 2px 12px; margin:10px 0;}
+  .en{margin:6px 0;}
+  .fr{margin:6px 0; color:#d9c7ff;}
+  .say .fr{font-style:italic;}   /* italic ONLY on FR clip text, never on buttons/labels/emojis */
+  /* the little EN/FR chips must stay UPRIGHT even inside italic clip text */
+  .lbl, .tag, .mclip .mlang, .ptext .pen:before, .ptext .pfr:before{font-style:normal !important;}
+  .lbl{display:inline-block; font-size:10px; font-weight:800; letter-spacing:1px;
+       padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:2px;}
+  .lbl.en{background:var(--cyan); color:#062b33;}
+  .lbl.fr{background:var(--magenta); color:#3a0322;}
+  .caine{background:linear-gradient(180deg,#241a07,#2a1f08);
+         border:1px solid #6b5310; border-radius:14px; padding:12px; margin:12px 0;}
+  .caine .who{font-weight:800; color:var(--gold); font-size:12px; letter-spacing:1px;
+              text-transform:uppercase; display:flex; align-items:center; gap:6px;}
+
+  ul{margin:8px 0; padding-left:20px;} li{margin:5px 0;}
+  ol{margin:8px 0; padding-left:22px;}
+  .check{list-style:none; padding-left:0;}
+  .check li{position:relative; padding-left:28px; margin:7px 0;}
+  .check li:before{content:"☐"; position:absolute; left:0; top:-1px;
+       color:var(--cyan); font-size:18px;}
+
+  .gloink{display:inline-flex; align-items:center; gap:7px; font-weight:700;
+          padding:5px 11px; border-radius:20px; font-size:13px; margin:3px 4px 3px 0;}
+  .dot{width:14px; height:14px; border-radius:50%; display:inline-block;
+       box-shadow:0 0 8px currentColor;}
+  .g-red{background:#3a0f14; color:var(--red);} .g-red .dot{background:var(--red);}
+  .g-yellow{background:#3a3110; color:var(--yellow);} .g-yellow .dot{background:var(--yellow);}
+  .g-purple{background:#2c143f; color:var(--purple);} .g-purple .dot{background:var(--purple);}
+  .g-blue{background:#0f2a45; color:var(--blue);} .g-blue .dot{background:var(--blue);}
+
+  .station{border-radius:16px; overflow:hidden; margin:14px 0;
+           border:1px solid var(--line); background:linear-gradient(180deg,var(--panel),var(--panel2));}
+  .station .head{padding:12px 14px; display:flex; align-items:center; gap:10px;
+                 border-bottom:1px solid var(--line);}
+  .station .num{flex:0 0 34px; height:34px; border-radius:50%; display:grid; place-items:center;
+                font-weight:900; font-size:15px; background:var(--magenta); color:#160b2e;}
+  .station .head .nm{font-weight:800; font-size:15.5px;}
+  .station .head .rf{font-size:11.5px; color:var(--muted);}
+  .station .inner{padding:12px 14px;}
+  .meta{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 8px;}
+  .pill{font-size:11px; background:#160b2e; border:1px solid var(--line);
+        color:var(--muted); padding:3px 9px; border-radius:20px;}
+  .pill b{color:var(--ink);}
+
+  .callout{background:#10243a; border:1px solid #1d5e86; border-radius:12px;
+           padding:11px 13px; margin:12px 0; font-size:13.5px;}
+  .callout.warn{background:#3a1010; border-color:#8a2b2b;}
+  .callout.tip{background:#10331f; border-color:#2c7a45;}
+  .callout .h{font-weight:800; font-size:12px; letter-spacing:1px; text-transform:uppercase;
+              margin-bottom:4px; color:var(--cyan);}
+  .callout.warn .h{color:#ff8b8b;} .callout.tip .h{color:var(--lime);}
+
+  .step{counter-reset:none;}
+  .divider{height:1px; background:var(--line); margin:16px 0; border:none;}
+  .pin{font-size:11px; color:var(--muted);}
+  .big-btn{display:block; text-align:center; background:linear-gradient(90deg,var(--magenta),var(--purple));
+           color:#fff; font-weight:800; padding:13px; border-radius:14px; text-decoration:none; margin:12px 0;
+           box-shadow:0 6px 16px rgba(255,59,167,.3);}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media(max-width:430px){.grid2{grid-template-columns:1fr;}}
+  footer{ text-align:center; color:var(--muted); font-size:11.5px; padding:24px 16px;}
+  .kbd{font-family:monospace; background:#160b2e; border:1px solid var(--line);
+       padding:1px 6px; border-radius:5px; font-size:12px;}
+  .star{color:var(--yellow);}
+  .toc-jump{font-size:12.5px; color:var(--cyan); text-decoration:none;}
+
+  /* ---- Caine trigger buttons (play host audio on the tablet) ---- */
+  .trigrow{display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin:8px 0 2px;}
+  .qa{display:flex; align-items:center; gap:9px; margin:6px 0; flex-wrap:wrap;}
+  .qa .trigrow{margin:0; flex:1 1 320px; min-width:0;}
+  .qa .prow{flex:1; min-width:0; margin:0;}   /* the data-host mount renders a full .prow card; let it size cleanly next to the answer */
+  .qa .ans{font-size:13px; font-weight:700; color:#0a7d63; background:#e6f7f1; border-radius:8px; padding:2px 9px; white-space:nowrap; align-self:center;}
+  .trig{border:none; border-radius:11px; font-weight:800; font-size:14px; padding:9px 15px;
+        cursor:pointer; color:#0c0820; box-shadow:0 3px 0 rgba(0,0,0,.3); display:inline-flex;
+        align-items:center; gap:5px; touch-action:manipulation;}
+  .trig:active{transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.3);}
+  .trig.en{background:linear-gradient(90deg,var(--cyan),#7fe9ff);}
+  .trig.fr{background:linear-gradient(90deg,var(--magenta),#ff8ec8); color:#3a0322;}
+  .trig.both{background:linear-gradient(90deg,var(--lime),var(--cyan)); color:#06331f;}
+  .trig.playing{outline:3px solid var(--yellow); outline-offset:1px; animation:trigpulse .85s ease-in-out infinite;}
+  @keyframes trigpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,210,92,.55)} 50%{box-shadow:0 0 0 7px rgba(255,210,92,0)}}
+  .trig.miss{background:#3a2a2a !important; color:#caa !important;}
+  .trigtext{color:var(--muted); font-size:12.5px; font-style:italic;}
+  .advdot{width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:#241144;
+          color:#b9a6e8; font-weight:700; cursor:pointer; font-size:12.5px;}
+  .advdot.cur{background:linear-gradient(90deg,var(--magenta),var(--purple)); color:#fff; border-color:transparent;}
+  .advdo{font-size:14px; line-height:1.4; color:#ffe6a3; background:linear-gradient(180deg,#2a1f08,#241a07);
+         border:1px solid #6b5310; border-radius:11px; padding:9px 12px; margin:2px 0 10px;}
+  .advdo:empty{display:none;} .advdo b{color:var(--gold);}
+
+  /* sticky mini audio bar */
+  #nowbar{position:fixed; left:0; right:0; bottom:0; z-index:60; display:none;
+          align-items:center; gap:10px; padding:9px 14px calc(9px + env(safe-area-inset-bottom));
+          background:rgba(36,17,68,.97); border-top:1px solid var(--line); backdrop-filter:blur(6px);}
+  #nowbar .eq{color:var(--cyan); display:inline-block;} #nowbar .lbl{flex:1; font-size:13px; color:var(--ink);}
+  #nowbar.on .eq{animation:eqp .7s ease-in-out infinite; font-size:18px;}
+  @keyframes eqp{0%,100%{transform:scale(1); opacity:.6} 50%{transform:scale(1.3); opacity:1}}
+  #nowbar button{background:#160b2e; border:1px solid var(--line); color:var(--ink);
+                 border-radius:10px; padding:7px 13px; font-weight:700; cursor:pointer;}
+
+  /* soundboard */
+  .board-group{margin:16px 0;}
+  .board-group h3{margin:6px 0 8px;}
+  .phrase{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--line);
+          border-radius:13px; padding:11px 12px; margin:9px 0;}
+  .phrase .ptxt{font-size:13px; color:var(--muted); margin:2px 0 8px;}
+  .phrase .ptxt b{color:var(--ink);}
+  .board-hint{position:sticky; top:46px; z-index:5; background:#10331f; border:1px solid #2c7a45;
+              border-radius:12px; padding:10px 12px; margin:6px 0 12px; font-size:13px; color:#dff7e4;}
+
+  /* ====================== redesign: type & polish ====================== */
+  body{font-family:"Outfit","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;}
+  h1{font-family:"Bungee",system-ui; letter-spacing:1px; text-shadow:0 2px 18px rgba(255,59,167,.25);}
+  h2,h3,.station .head .nm,.slot .body .t{font-family:"Outfit","Outfit",system-ui;}
+  nav.tabs button,.trig,.big-btn{font-family:"Outfit","Outfit",system-ui;}
+  header.top{padding-top:30px;}
+  header.top:after{content:""; position:absolute; left:0; right:0; bottom:0; height:7px;
+     background:repeating-linear-gradient(90deg,var(--magenta) 0 22px,#160b2e 22px 44px,var(--cyan) 44px 66px,#160b2e 66px 88px); opacity:.7;}
+  .card{box-shadow:0 8px 26px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.04);}
+  nav.tabs button.active{text-shadow:0 0 12px rgba(255,59,167,.5);}
+
+  /* back-to-menu pill */
+  .backbtn{position:absolute; left:12px; top:14px; display:inline-flex; align-items:center; gap:6px; z-index:3;
+     background:rgba(22,11,46,.65); border:1px solid var(--line); color:var(--cyan); text-decoration:none;
+     font-weight:700; font-size:13px; padding:7px 12px; border-radius:12px; backdrop-filter:blur(4px);}
+  .backbtn:active{transform:translateY(1px);}
+
+  /* ===== shared phrase-row: 3 buttons (EN/FR + full-width EN+FR) LEFT, exact text RIGHT ===== */
+  .prow{display:flex; gap:13px; align-items:stretch; background:linear-gradient(180deg,var(--panel),var(--panel2));
+        border:1px solid var(--line); border-radius:14px; padding:11px 12px; margin:9px 0;
+        box-shadow:0 5px 16px rgba(0,0,0,.25);}
+  .pbtns{flex:0 0 130px; display:grid; grid-template-columns:1fr 1fr; gap:6px; align-content:center;}
+  .pbtns .trig{margin:0; padding:9px 0; justify-content:center; font-size:13.5px; box-shadow:0 3px 0 rgba(0,0,0,.3);}
+  .pbtns .trig.both{grid-column:1 / -1;}
+  .ptext{flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center;}
+  .ptext .plabel{font-size:10.5px; font-weight:800; color:var(--gold); text-transform:uppercase; letter-spacing:.7px; margin-bottom:3px;}
+  .ptext .pen{font-size:14px; color:var(--ink); line-height:1.4;}
+  .ptext .pfr{font-size:13px; color:#d7c4ff; font-style:italic; line-height:1.4; margin-top:4px;}
+  .ptext .pfr:before,.ptext .pen:before{font-size:9px; font-weight:800; letter-spacing:1px; padding:1px 5px; border-radius:4px; margin-right:6px; vertical-align:2px;}
+  .ptext .pen:before{content:"EN"; background:var(--cyan); color:#062b33;}
+  .ptext .pfr:before{content:"FR"; background:var(--magenta); color:#3a0322;}
+  @media(max-width:430px){ .pbtns{flex-basis:108px;} .pbtns .trig{font-size:12.5px;} }
+
+  /* ===== "type your own line" TTS card + saved manual clips ===== */
+  .ttscard textarea{width:100%; min-height:62px; resize:vertical; border-radius:12px; border:1px solid var(--line);
+     background:#160b2e; color:var(--ink); font:15px/1.4 "Outfit",system-ui; padding:10px 12px; outline:none;}
+  .ttscard textarea:focus{border-color:var(--magenta);}
+  .ttsrow{display:flex; gap:8px; align-items:center; margin-top:9px; flex-wrap:wrap;}
+  .ttsrow select{background:#160b2e; color:var(--ink); border:1px solid var(--line); border-radius:10px;
+     padding:9px 10px; font:14px "Outfit",system-ui;}
+  .ttsrow .trig{padding:9px 16px;}
+  .mlist{margin-top:11px;}
+  .mclip{display:flex; gap:9px; align-items:center; background:#160b2e; border:1px solid var(--line);
+     border-radius:12px; padding:8px 10px; margin:7px 0;}
+  .mclip .mtxt{flex:1; min-width:0; font-size:13.5px; color:var(--ink);}
+  .mclip .mlang{font-size:9.5px; font-weight:800; padding:1px 6px; border-radius:5px; margin-right:6px; vertical-align:1px;}
+  .mclip .mlang.en{background:var(--cyan); color:#062b33;} .mclip .mlang.fr{background:var(--magenta); color:#3a0322;}
+  .mclip button{border:none; border-radius:10px; padding:9px 12px; font-weight:800; cursor:pointer; font-family:"Outfit",system-ui;}
+  .mplay{background:linear-gradient(90deg,var(--cyan),#7fe9ff); color:transparent; font-size:0;
+         position:relative; width:46px; height:36px; padding:0; flex:0 0 auto;}
+  /* play / pause icon drawn in CSS so it's pixel-centred (▶/⏸ glyphs sit off-centre) */
+  .mplay::before,.mplay::after{content:""; position:absolute; top:50%; left:50%;}
+  .mplay::before{ width:0; height:0; border-style:solid; border-width:7px 0 7px 12px;
+        border-color:transparent transparent transparent #062b33; transform:translate(-32%,-50%); }
+  .mplay::after{ width:0; height:0; }
+  .mclip.playing .mplay::before{ border:none; width:4.5px; height:15px; background:#062b33; border-radius:2px;
+        transform:translate(-50%,-50%) translateX(-3.5px); }
+  .mclip.playing .mplay::after{ width:4.5px; height:15px; background:#062b33; border-radius:2px;
+        transform:translate(-50%,-50%) translateX(3.5px); }
+  .mdel{background:#3a1622; color:#ff9bb5;}
+  .mclip.playing{outline:2px solid var(--yellow); outline-offset:1px;}
+
+  /* ===== filler-game cards in Run of Day ===== */
+  .gamecard{background:linear-gradient(180deg,#1d1442,#251b50); border:1px solid var(--line);
+     border-radius:16px; padding:14px 15px; margin:14px 0; box-shadow:0 8px 24px rgba(0,0,0,.3);}
+  .gamecard h3{margin:0 0 4px; color:var(--cyan); font-size:17px;}
+  .gamecard .tagline{color:var(--muted); font-size:12.5px; margin:0 0 8px;}
+  .gamecard ol.howto{padding-left:20px; margin:8px 0;} .gamecard ol.howto li{margin:5px 0; font-size:13.5px;}
+  .clipstrip{margin-top:6px;} .clipstrip .ph{font-size:11px; font-weight:800; color:var(--gold);
+     text-transform:uppercase; letter-spacing:.6px; margin:12px 0 2px;}
+
+  /* ===================================================================== */
+  /* ===============  REDESIGN v2 — "Digital Big Top"  ==================== */
+  /* ===================================================================== */
+  :root{ --tent1:#ff3ba7; --tent2:#26e6ff; --gold:#ffd23f; }
+  body{
+    background:
+      radial-gradient(1200px 540px at 50% -12%, #4a1a8f 0%, transparent 58%),
+      radial-gradient(760px 420px at 8% 18%, rgba(38,230,255,.10) 0%, transparent 50%),
+      radial-gradient(820px 460px at 100% 102%, #5a1145 0%, transparent 55%),
+      linear-gradient(180deg, #160b2e, #0e0720 70%);
+    background-attachment:fixed;
+  }
+  /* faint grain for texture */
+  body:after{ content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  main, header.top, nav.tabs{ position:relative; z-index:1; }
+
+  /* --- header: marquee + circus-tent valance --- */
+  header.top{ padding:30px 16px 30px; background:linear-gradient(180deg,#33156a,#1d0c43); border-bottom:none; }
+  header.top:before{ background:repeating-linear-gradient(90deg,transparent 0 30px,rgba(255,210,63,.07) 30px 60px); }
+  header.top:after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:18px; z-index:2; opacity:1;
+    background:
+      radial-gradient(circle at 14px 0, var(--tent2) 11px, transparent 12px) 0 0/56px 18px repeat-x,
+      radial-gradient(circle at 42px 0, var(--tent1) 11px, transparent 12px) 0 0/56px 18px repeat-x;
+    filter:drop-shadow(0 3px 5px rgba(0,0,0,.4)); }
+  .eyes{ font-size:34px; animation:eyeglow 3.5s ease-in-out infinite; }
+  @keyframes eyeglow{ 0%,100%{ filter:drop-shadow(0 0 8px var(--cyan)); } 50%{ filter:drop-shadow(0 0 18px var(--cyan)); } }
+  h1{ font-size:30px; line-height:1.02; margin:8px 0 4px;
+      background:linear-gradient(95deg,#26e6ff 5%,#ff3ba7 50%,#ffd23f 95%); -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow:0 6px 30px rgba(255,59,167,.35); }
+  .when{ background:linear-gradient(90deg,var(--gold),#ffe98a); box-shadow:0 4px 14px rgba(255,210,63,.3);
+      border-radius:22px; padding:5px 16px; font-size:12.5px; }
+  .backbtn{ background:rgba(12,7,26,.55); border-color:#5a3aa0; }
+
+  /* --- tabs as glowing ticket pills --- */
+  nav.tabs{ gap:6px; padding:9px 10px; background:rgba(18,9,38,.92); border-bottom:1px solid #3a2170; }
+  nav.tabs button{ border:1px solid transparent; border-radius:13px; padding:9px 13px; font-size:12.5px; color:var(--muted); }
+  nav.tabs button.active{ color:#fff; border-color:#5a3aa0;
+      background:linear-gradient(180deg,#2c1657,#3a1f6e); box-shadow:0 0 16px rgba(255,59,167,.25), inset 0 1px 0 rgba(255,255,255,.06); text-shadow:0 0 10px rgba(255,59,167,.6); }
+
+  /* --- section headings: marquee accent rule --- */
+  h2{ font-size:19px; color:#fff; align-items:center; }
+  h2:after{ content:""; flex:1; height:3px; border-radius:2px; margin-left:4px;
+      background:linear-gradient(90deg,var(--magenta),transparent); }
+  h2 .ic{ filter:drop-shadow(0 0 8px rgba(255,59,167,.5)); }
+
+  /* ============ RUN OF DAY → vertical timeline ============ */
+  #run .card.flush{ background:none; border:none; box-shadow:none; padding:2px 0 2px 2px; overflow:visible; position:relative; }
+  #run .card.flush:before{ content:""; position:absolute; left:30px; top:18px; bottom:18px; width:3px; border-radius:3px;
+      background:linear-gradient(180deg,var(--cyan),var(--magenta) 60%,var(--gold)); opacity:.4; }
+  #run .slot{ display:block; position:relative; border:none; padding:2px 0 16px 70px; }
+  #run .slot:last-child{ padding-bottom:2px; }
+  #run .slot .time{ position:absolute; left:2px; top:0; width:56px; height:56px; border-radius:50%; flex:none;
+      display:grid; place-items:center; text-align:center; font-family:"Outfit",system-ui; font-weight:600; font-size:12px; color:#fff; padding:0;
+      background:radial-gradient(circle at 36% 28%, #3a2073, #190e3c); border:2px solid var(--cyan);
+      box-shadow:0 0 0 5px rgba(38,230,255,.10), 0 7px 18px rgba(0,0,0,.45); z-index:1; }
+  #run .slot .body{ background:linear-gradient(180deg,#241349,#2c1856); border:1px solid #44267e; border-left:3px solid var(--magenta);
+      border-radius:16px; padding:13px 15px; box-shadow:0 10px 26px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05); }
+  #run .slot .body:before{ content:""; position:absolute; left:58px; top:24px; width:14px; height:2px; background:#44267e; }
+  #run .slot .body .t{ font-size:16px; color:#fff; }
+  .tag{ font-weight:800; box-shadow:0 2px 6px rgba(0,0,0,.25); }
+
+  /* ============ generic cards ============ */
+  .card{ background:linear-gradient(180deg,#241349,#2a1652); border:1px solid #44267e; border-radius:18px;
+      box-shadow:0 10px 28px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05); }
+  .board-hint{ background:linear-gradient(180deg,#10331f,#0c2a19); border:1px solid #2c7a45; box-shadow:0 6px 18px rgba(0,0,0,.3); }
+
+  /* ============ filler-game cards → show posters ============ */
+  .gamecard{ background:
+      linear-gradient(180deg,#221045,#2a1556),
+      radial-gradient(420px 120px at 100% 0%, rgba(255,59,167,.14), transparent 60%);
+    border:2px dashed #6a3ca8; border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.36); position:relative; }
+  .gamecard:before{ content:"★"; position:absolute; top:-12px; right:14px; font-size:20px; color:var(--gold);
+      filter:drop-shadow(0 0 6px rgba(255,210,63,.6)); }
+  .gamecard h3{ font-size:18px; color:#fff; }
+  .gamecard h3 .star{ color:var(--gold); }
+
+  /* ============ phrase-rows → glassy ============ */
+  .prow{ background:linear-gradient(180deg,rgba(40,22,82,.9),rgba(30,16,62,.9)); border:1px solid #44267e;
+      border-radius:15px; box-shadow:0 6px 18px rgba(0,0,0,.28); backdrop-filter:blur(3px); }
+  .ptext .pen{ font-size:14px; } .ptext .plabel{ color:var(--gold); }
+
+  /* ============ buttons → chunky 3D with glow ============ */
+  .trig{ border-radius:13px; box-shadow:0 4px 0 rgba(0,0,0,.35), 0 6px 14px rgba(0,0,0,.25); font-weight:800; }
+  .trig:active{ box-shadow:0 1px 0 rgba(0,0,0,.35); }
+  .trig.en{ background:linear-gradient(180deg,#4af0ff,#1ec8e6); color:#03252e; }
+  .trig.fr{ background:linear-gradient(180deg,#ff67bb,#e0349a); color:#3a0322; }
+  .trig.both{ background:linear-gradient(180deg,#b6ff7a,#5fe0a0); color:#06331f; }
+  .trig.playing{ outline:3px solid var(--gold); }
+  .big-btn{ border-radius:16px; box-shadow:0 6px 0 rgba(0,0,0,.3), 0 10px 22px rgba(255,59,167,.3); }
+
+  /* ============ TTS card ============ */
+  .ttscard{ background:linear-gradient(180deg,#1c2c4a,#16233e); border:1px solid #2f6aa0; }
+  .ttscard textarea{ background:#0e1a30; border-color:#2f6aa0; }
+
+  /* nicer sticky now-bar */
+  #nowbar{ background:linear-gradient(180deg,rgba(46,21,86,.98),rgba(30,14,58,.98)); border-top:2px solid var(--magenta); }
+
+  /* ===== weight calm-down — let Outfit breathe (Bungee stays ONLY on marquee + time-nodes) ===== */
+  body{ font-weight:400; letter-spacing:.1px; }
+  p, .small, .muted, .slot .body .d, .ptext .pen, .ptext .pfr, .pin, .pill, .tagline, .legend, li, .callout{ font-weight:400; }
+  h2, h3, .slot .body .t, .gamecard h3, .station .head .nm, .big-btn,
+  nav.tabs button, .trig, .mclip button, .ttsrow select, .when{ font-weight:600; }
+  nav.tabs button.active{ font-weight:600; }
+  .tag, .lbl, .mclip .mlang, .ptext .plabel, .clipstrip .ph{ font-weight:700; }   /* tiny chips need a little weight */
+  h2{ letter-spacing:.2px; } h3{ letter-spacing:.2px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="backbtn" href="/">◀ Menu</a>
+  <div class="eyes">◉ ‿ ◉</div>
+  <h1>Nora's Amazing<br>Digital Circus</h1>
+  <div class="sub">Her 7th Birthday — Le Cirque Numérique d'Nora · 7 ans</div>
+  <div class="when">Saturday · 11:00 → 17:00 · Pizzas &amp; Sushis</div>
+</header>
+
+<div class="sonosbar" id="sonosBar">
+  <label class="sonosbar-on"><input type="checkbox" id="sonosOnTop" onchange="sonosToggle(this.checked)"> 🔈 Play all sounds on the Sonos</label>
+  <span class="sonosbar-vol"><span class="small">Volume</span>
+    <input type="range" id="sonosVolTop" min="0" max="100" step="1" value="50" oninput="sonosVolLbl(this.value)" onchange="sonosVol(this.value)">
+    <b id="sonosVolLblTop">50%</b></span>
+  <span id="sonosStatusTop" class="small">off</span>
+</div>
+
+<nav class="tabs" id="tabs">
+  <button data-t="run" class="active">▶ Run of Day</button>
+  <button data-t="board">🎤 Caine Soundboard</button>
+  <button data-t="adv">🎪 The Adventure</button>
+  <button data-t="prep">🛒 Prep &amp; Shopping</button>
+  <button data-t="cheat">⚡ Cheat Sheet</button>
+</nav>
+
+<main>
+
+<!-- ================= RUN OF DAY ================= -->
+<section id="run" class="active">
+  <h2><span class="ic">📋</span> Run of the Day</h2>
+  <p class="muted small">Times are a guide, not a rule — let the energy lead. The two anchors are <b>lunch (~12:00)</b> and <b>The Adventure (~14:15)</b>, which flows straight into the cake. Everything else flexes around them. Hot day: keep water &amp; shade going all day. ☀️ Every Caine line below shows <b>exactly</b> what he'll say — tap <b>EN</b>, <b>FR</b> or <b>EN+FR</b>.</p>
+
+  <div class="card flush">
+    <div class="slot">
+      <div class="time">11:00</div>
+      <div class="body">
+        <div class="t">Arrival &amp; Water Slide opens 💦</div>
+        <div class="d">Greet each kid and let them play — music on, free play on the water slide + pool deck while everyone arrives. <b>No masks or badges yet</b> — those are saved for the adventure reveal. ▶ Play <b>New player!</b> each time someone new walks in.</div>
+        <span class="tag water">Water</span><span class="tag flex">Flex</span>
+        <div data-host="welcome"></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">12:00</div>
+      <div class="body">
+        <div class="t">Lunch — Pizzas &amp; Sushis 🍕🍣</div>
+        <div class="d">Seat everyone at the terrace table. Call it the circus "fuel-up". Lots of water.</div>
+        <span class="tag food">Food</span>
+        <div data-host="lunch eatup"></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">12:40</div>
+      <div class="body">
+        <div class="t">Welcome Circle — hype the adventure + meet Bubble! 🎪</div>
+        <div class="d">Gather everyone after they've eaten. The order of buttons below <b>is the running order</b>:
+          <ol style="margin:6px 0 0; padding-left:18px">
+            <li><b>Gather round</b> — Caine calls them in. <b>Then YOU speak</b> (your voice): <i>"Hi everyone! Someone very special wants to meet you all — listen!"</i> → play the next clip.</li>
+            <li><b>Hype the adventure</b> — the big "Are you ready to go on an adventure?!" announcement.</li>
+            <li><b>Meet Bubble (1→4)</b> — Caine introduces <b>you</b> as Bubble and asks you 3 quick questions. Play one, answer out loud, play the next:</li>
+          </ol>
+        </div>
+        <div class="dialog small" style="margin:6px 0; padding-left:8px; border-left:3px solid #0a4a55">
+          <div>🤡 <b>Caine (clip 1):</b> "…are ALL my players here and ready?" → 🎤 <b>You:</b> "Yes Caine — everyone's here and ready!"</div>
+          <div>🤡 <b>Caine (clip 2):</b> "How MANY players?" → 🎤 <b>You:</b> say the number ("We've got <b>six</b>, Caine!" — count heads first).</div>
+          <div>🤡 <b>Caine (clip 3):</b> "WHO is the birthday star, and how old?" → 🎤 <b>You:</b> "It's <b>Nora</b> — she's turning <b>seven</b>!"</div>
+          <div>🤡 <b>Caine (clip 4):</b> reacts, says Bubble handles logistics &amp; advice — <i>"treat him well… don't erase him!"</i> — then sends them off to play (adventure comes later).</div>
+        </div>
+        <span class="tag main">Hosted</span>
+        <div data-host="gather hype meet_bubble1 meet_bubble2 meet_bubble3 meet_bubble4"></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">13:00</div>
+      <div class="body">
+        <div class="t">Free time — digest 🧩</div>
+        <div class="d">Post-lunch, low energy on purpose — no slide right before the adventure. Let kids chill, digest, mess about in the garden / with toys. ~30 min.</div>
+        <span class="tag calm">Calm</span>
+        <div data-host="calm water"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- filler game #1 -->
+  <div class="gamecard">
+    <h3>🎩 Caine Says · <span class="star">13:30</span></h3>
+    <p class="tagline">Simon-Says with a circus twist. ~10 min · no losers · gets shy kids comfortable.</p>
+    <ol class="howto">
+      <li>Gather the kids loosely facing you (Bubble). Hit <b>Intro / rules</b> — Caine explains the game.</li>
+      <li>Play <b>one command clip at a time</b> (<b>Caine says: JUMP</b>, <b>FREEZE</b>…) — let the kids do it, then play the next. Pace it yourself; invent your own too ("Caine says… hop like a frog!").</li>
+      <li>Every so often play a <b>⚡ TRICK</b> clip — Caine gives the order <b>without</b> "Caine says". Anyone who does it sits down (a little "abstracted"). No one's really out — they cheer.</li>
+      <li>After ~10 min, hit <b>Conclusion</b> to crown everyone champions.</li>
+    </ol>
+    <div class="clipstrip" data-host="csays_intro csays_cmd1 csays_cmd2 csays_cmd3 csays_cmd4 csays_cmd5 csays_cmd6 csays_cmd7 csays_cmd8 csays_cmd9 csays_cmd10 csays_cmd11 csays_trick csays_trick2 csays_trick3 csays_trick4 csays_trick5 csays_trick6 csays_end"></div>
+  </div>
+
+  <!-- filler game #2 -->
+  <div class="gamecard">
+    <h3>🥔 Pass the Hot Gloink · <span class="star">13:55</span></h3>
+    <p class="tagline">Caine's hot-potato. Re-energises right before the adventure &amp; teases the "glitch" idea. ~10 min.</p>
+    <ol class="howto">
+      <li>Sit the kids in a circle with a ball (the "Gloink"). Hit <b>Intro / rules</b>.</li>
+      <li><b>You are the music</b> — play a tune on your phone and stop it at random. Drop a <b>Taunt</b> ("tick… tock…") to build tension.</li>
+      <li>Whoever holds the Gloink when the music stops is "abstracted" — hit <b>Abstracted!</b> They step out and become a <b>Glitch Judge</b> beside you, making "buzz!" noises.</li>
+      <li>Last player in the circle wins — hit <b>Winner!</b> (first dibs on a candy bag).</li>
+    </ol>
+    <div class="clipstrip" data-host="hotgloink_intro hotgloink_taunt hotgloink_out hotgloink_end"></div>
+  </div>
+
+  <div class="card flush">
+    <div class="slot">
+      <div class="time">14:15</div>
+      <div class="body">
+        <div class="t">⭐ THE ADVENTURE: Gather the Gloinks (~50 min)</div>
+        <div class="d">The main event. Masks on for the secret badge reveal, into the Digital Circus, 4 stations, unlock the exit. Open the <a class="toc-jump" data-go="adv">Adventure tab</a> — its <b>📡 remote</b> drives Nora's iPad. Flows into cake at ~15:00.</div>
+        <span class="tag main">Main event</span>
+        <div class="muted small" style="margin-top:6px">▶ <b>Before the kids arrive:</b> hide the 4 Gloinks (RED · YELLOW · PURPLE · BLUE), one near each station, so the kids <b>find</b> them. Then just open the Adventure tab and drive the 📡 remote — Caine speaks the teleports, the Gloink hunts and the stakes himself, step by step.</div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">15:00</div>
+      <div class="body">
+        <div class="t">🎂 Cake time!</div>
+        <div class="d">The adventure ends upstairs: they crack the code, <b>ESCAPE</b> through the Exit Door, then <b>hunt for the hidden treasure</b> (the candy bags). Once it's found, Caine calls <b>CAKE TIME</b> — gather everyone at the cake (set up upstairs too, in the living room). Candles, "Joyeux anniversaire", everyone buzzing from winning.</div>
+        <span class="tag food">Cake</span><span class="tag main">Big moment</span>
+        <div data-host="cake birthday"></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">15:30</div>
+      <div class="body">
+        <div class="t">Presents 🎁</div>
+        <div class="d">Open gifts while everyone's gathered and happy from the cake.</div>
+        <span class="tag flex">Flex</span>
+        <div data-host="presents presents_react photo"></div>
+      </div>
+    </div>
+    <div class="slot">
+      <div class="time">16:00</div>
+      <div class="body">
+        <div class="t">Water slide + free play 💦</div>
+        <div class="d">Now the slide comes back out — kids play freely on the slide / pool / garden until pickup. Easy, low-supervision wind-down. Need a quick group game? The Glitch Balloons below are perfect.</div>
+        <span class="tag water">Water</span><span class="tag flex">Flex</span>
+        <div data-host="slide water"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- optional filler during the wind-down -->
+  <div class="gamecard">
+    <h3>🎈 Glitch Balloons <span class="muted small">(optional, any time)</span></h3>
+    <p class="tagline">Zero setup. Keep the leftover Gloink-colour balloons off the ground as a team. Fills 10 min for any age.</p>
+    <ol class="howto">
+      <li>Toss up a few balloons. Hit <b>Intro / rules</b> — Caine sets the challenge.</li>
+      <li>Team goal: don't let any balloon touch the ground. Count the saves out loud. Drop a <b>Faster!</b> taunt to crank up the energy.</li>
+      <li>When you've had enough (~10 min), hit <b>Winner!</b> — Caine crowns the team.</li>
+    </ol>
+    <div class="clipstrip" data-host="balloon_intro balloon_taunt balloon_end"></div>
+  </div>
+
+  <div class="card flush">
+    <div class="slot">
+      <div class="time">16:45</div>
+      <div class="body">
+        <div class="t">Goodbye 👋 — a personal send-off for each kid</div>
+        <div class="d">As parents arrive, make sure each kid leaves with their candy "treasure" bag + their character badge. Play each child's <b>personal goodbye</b> as they head out — Caine names them and their character. (Start with <b>Goodbye, everyone!</b> for the whole group.)</div>
+        <span class="tag flex">Flex</span>
+        <div data-host="goodbye_all goodbye_alyssa goodbye_keanu goodbye_noe goodbye_lea goodbye_miya goodbye_arya goodbye_tony"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="h">If you're running behind</div>
+    Trim the free time, drop a filler game, or drop the <b>Burger</b> station (most skippable — keep the Manor, it's your calm breather before the finale). Never cut the cake-reveal moment — that's the payoff.
+  </div>
+</section>
+
+<!-- ================= CAINE SOUNDBOARD ================= -->
+<section id="board">
+  <h2><span class="ic">🎤</span> Caine Soundboard</h2>
+  <div class="board-hint">🔊 Tap <b>EN</b>, <b>FR</b> or <b>EN+FR</b> — Caine speaks (through this tablet, or your Sonos below).
+     Hold it up so the kids hear him! <b>Nora &amp; Leo are native English speakers — use EN by default.</b> Add <b>FR</b> (or <b>EN+FR</b>) when the French-speaking guests need it.</div>
+
+  <div class="card ttscard">
+    <h3 style="margin-top:0; color:var(--cyan)">🎙️ Type your own line — Caine will say it</h3>
+    <p class="muted small" style="margin:2px 0 9px">Type anything — in English <b>or French</b> — and Caine speaks it in his own voice (he works out the language himself). Your saved lines stay here for the whole party (and show on every device). Tick “Play all sounds on the Sonos” at the top to send these to the speakers.</p>
+    <textarea id="ttsText" placeholder="e.g. Hugo, ton pizza refroidit !" maxlength="600"></textarea>
+    <div class="ttsrow">
+      <button class="trig en" id="ttsGo" onclick="ttsGen()">✨ Make Caine say it</button>
+      <span id="ttsStatus" class="small muted"></span>
+    </div>
+    <div id="manualClips" class="mlist"></div>
+  </div>
+
+  <div class="card" id="sonosCard">
+    <div class="row" style="justify-content:space-between; align-items:center;">
+      <label style="font-weight:700; cursor:pointer;"><input type="checkbox" id="sonosOn" onchange="sonosToggle(this.checked)"> 🔈 Play Caine through the Sonos</label>
+      <span id="sonosStatus" class="small" style="color:var(--muted)">off</span>
+    </div>
+    <div class="row" style="gap:10px; margin-top:9px; align-items:center;">
+      <span class="small muted">Volume</span>
+      <input type="range" id="sonosVol" min="0" max="100" step="1" value="50" oninput="sonosVolLbl(this.value)" onchange="sonosVol(this.value)" style="flex:1; accent-color:var(--magenta);">
+      <span id="sonosVolLbl" style="color:var(--yellow); min-width:40px; text-align:right; font-weight:700;">50%</span>
+    </div>
+    <div class="row" style="gap:8px; margin-top:9px; flex-wrap:wrap;">
+      <button class="trig" style="background:#241144;color:#b9a6e8;" onclick="sonosDiscover()">🔎 Find Sonos</button>
+      <button class="trig en" onclick="sonosTest()">▶ Test on Sonos</button>
+      <span id="sonosIp" class="small muted"></span>
+    </div>
+  </div>
+  <p class="muted small">These are quick one-tap phrases to sprinkle through the whole day — announce lunch &amp; cake, calm the room, drop a joke, hype them up. (The step-by-step <b>adventure</b> lines live on Nora's iPad console; these are <i>your</i> Bubble buttons.)</p>
+  <div id="boardWrap"><p class="muted">Loading Caine's voice…</p></div>
+</section>
+
+<!-- ================= ADVENTURE ================= -->
+<section id="adv">
+  <h2><span class="ic">🎪</span> The Adventure: Gather the Gloinks</h2>
+
+  <div class="card" id="advRemote" style="position:sticky; top:46px; z-index:6;">
+    <div class="row" style="justify-content:space-between; align-items:center;">
+      <div><b>📡 Adventure remote</b></div>
+      <span id="advConn" class="small" style="color:var(--muted)">○ start the Party Server to drive the iPad</span>
+    </div>
+    <div id="advStepLbl" style="font-weight:800; font-size:16px; margin:8px 0 4px; color:var(--cyan)">—</div>
+    <div id="advDo" class="advdo"></div>
+    <div class="row" style="gap:8px;">
+      <button class="trig" style="background:#241144; color:#b9a6e8;" onclick="advCmd('back')">◀ Back</button>
+      <button class="trig en" onclick="advCmd('replay')">↻ Replay</button>
+      <button class="trig fr" style="flex:1; justify-content:center;" onclick="advCmd('next')">Next ▶</button>
+    </div>
+    <div class="muted small" style="margin-top:8px;">Tap a step to jump Nora's console straight there:</div>
+    <div id="advDots" class="row" style="gap:5px; margin-top:6px; flex-wrap:wrap;"></div>
+  </div>
+
+  <p class="muted small">~50 min (budget that, not 45 — herding 6 kids between zones eats time) · for ~5–7 kids (4–6 guests + Leo). Everything you say is written in <span class="lbl en">EN</span> English and <span class="lbl fr">FR</span> French. <b>Nora &amp; Leo are native English speakers, so English is the main language of the show</b> — the <span class="lbl fr">FR</span> lines are there for the guests who don't speak English.</p>
+
+  <div class="callout tip">
+    <div class="h">Route — walk it this way (saves chaos)</div>
+    Garden ① → pool deck ④ → terrace ② → bedroom ③ (calm) → <b>Exit Door right by the bedroom</b>. This funnels everyone toward the cake instead of criss-crossing the house. Between stations, use the <b>teleport ritual</b> below so moving the kids is itself a game.
+  </div>
+
+  <div class="callout">
+    <div class="h">🌀 Teleport ritual — split in two so YOU control the "ZAP!"</div>
+    The teleport brackets the walk between stations, in two beats:
+    <ol style="margin:6px 0 8px; padding-left:18px">
+      <li><b>Leaving a station</b> — kids put <b>goggles DOWN</b> and follow you. Optionally play <b>🌀 Teleport — goggles down</b> so Caine says it: <i>"Goggles down, into the swirly portal, follow Bubble…"</i></li>
+      <li><b>Walk them over</b> to the next spot (goggles down = "in transit through the portal").</li>
+      <li><b>On arrival</b>, tap to the next station — and only THEN does Caine fire the countdown: <i>"…3… 2… 1… ZAP! Goggles UP and look — Welcome to…!"</i> So the reveal lands exactly when the kids have actually arrived.</li>
+    </ol>
+    The <b>"3-2-1 ZAP!"</b> lives on the console's next station step, so it waits for your tap — never auto-fires before you're there. Keeps the eye-masks useful all adventure (goggles down only for the short walk) and gives stragglers a job: carry their Gloink like a relay baton.
+    <div class="trigrow" data-host="teleport_go"></div>
+  </div>
+
+  <div class="callout">
+    <div class="h">The idea in one line</div>
+    Caine the ringmaster hides 4 magic <b>Gloinks</b> around the circus. Kids complete 4 silly challenges to find them, pass a quick <b>Human Test</b>, then crack the <b>Exit Code</b> on the iPad to <b>escape</b> — and hunt down the hidden <b>treasure</b>, before Caine calls cake time. 🎂
+  </div>
+
+  <div class="callout tip">
+    <div class="h">⭐ How you'll run it: the Caine Console + you as Bubble</div>
+    The best way: open the <b>Caine Console</b> on the iPad (the <span class="kbd">caine-console</span> app). It <b>speaks every step in Caine's voice</b> — and if you generate the voice with the kids' names, Caine literally says <i>"Joyeux anniversaire, Nora!"</i> and names each player. You hold the iPad and play <b>Bubble</b>, Caine's helper: you press <b>NEXT</b> at each step, run the little games, and lead the Gloink hunts. The kids hear Caine; you're his sidekick guiding them. <br>
+    Prefer to do it without the tech? Every line below is also written out — just voice Caine yourself. The scripts below ARE the console's words, so nothing's lost either way. (See the <a class="toc-jump" data-go="prep">Prep</a> tab to set up the console + voice.)
+  </div>
+
+  <h3>What you need staged in advance</h3>
+  <ul>
+    <li>An <b>eye mask per kid</b> (the "VR headset").</li>
+    <li><b>4 Gloinks</b> = 4 balls/balloons/plush, one each in <span class="gloink g-red"><span class="dot"></span>red</span> <span class="gloink g-yellow"><span class="dot"></span>yellow</span> <span class="gloink g-purple"><span class="dot"></span>purple</span> <span class="gloink g-blue"><span class="dot"></span>blue</span>. Hide one near each station.</li>
+    <li>The <b>"Exit Door"</b> = the <b>upstairs guest toilet door</b> — decorate it with the printable EXIT sign. (They get teleported UP to it for the finale.) Nothing needs to be behind it.</li>
+    <li>A <b>"treasure chest"</b> (box/basket) of candy bags, <b>hidden</b> somewhere near the top of the stairs for the post-escape treasure hunt. The <b>cake</b> is set up <b>separately</b> (upstairs too — the kitchen/living room at road level), <i>not</i> behind the door.</li>
+    <li>The <b>iPad</b> with the <b>Caine Console</b> open (the <span class="kbd">caine-console</span> app), volume up. You carry it as Bubble.</li>
+    <li>Printable <b>station signs</b> + the <b>Exit Door sign</b> from the Print Pack.</li>
+  </ul>
+
+  <div class="callout tip">
+    <div class="h">The Exit Code — a puzzle they must crack</div>
+    The secret code is the <b>order they FOUND the Gloinks</b> (<span style="color:var(--red)">RED</span> → <span style="color:var(--yellow)">YELLOW</span> → <span style="color:var(--purple)">PURPLE</span> → <span style="color:var(--blue)">BLUE</span>, i.e. the station order). <b>Caine never reveals it</b> and the iPad buttons are <b>shuffled</b>, so the kids must work it out themselves — <b>no time limit, and it never opens by itself</b>. Wrong taps give gentle nudges (it keeps showing the strongest hint), so they get there. If you ever need to move on, <b>tap NEXT on your remote</b>.
+  </div>
+
+  <hr class="divider">
+
+  <h2><span class="ic">🎬</span> Step 1 — Headsets on &amp; the secret reveal (5 min)</h2>
+  <p class="pin">📍 Everyone <b>sitting</b> in a circle on the terrace (sitting keeps blind kids calm and still).</p>
+  <p>This is where their circus identity is born. Give each kid an eye mask. They put it ON over their eyes — and <b>while they can't see, you quietly stick a character badge on each kid</b>. When they open their eyes, they've become someone new. Build it up first:</p>
+
+  <div class="caine">
+    <div class="who">🎤 BUBBLE warms up the crowd (the kids already know Caine from all day — now you send them INTO his world; say it in YOUR voice, not his)</div>
+    <div class="say">
+      <div class="en"><span class="lbl en">EN</span> "You all know my friend <b>CAINE</b> by now, right? The funny voice from the iPad who's been playing with us ALL DAY! Here's the big secret: Caine is a magical ringmaster who lives <b>inside</b> a world in the screen — <b>The Amazing Digital Circus</b> — and all day he's only been able to peek out and talk to us. But THESE… these are special <b>headsets</b>. The moment they cover your eyes, Caine can finally pull you ALL the way INSIDE his world, for a REAL adventure! One rule to get back home: you finish the adventure <b>together</b>. Headsets ON, eyes covered, NO peeking… in 3… 2… 1…!"</div>
+      <div class="fr"><span class="lbl fr">FR</span> « Vous connaissez tous mon ami <b>CAINE</b> maintenant, hein ? La voix rigolote de l'iPad qui joue avec nous depuis ce matin ! Voici le grand secret : Caine est un présentateur magique qui vit <b>à l'intérieur</b> d'un monde dans l'écran — <b>le Cirque Numérique Fantastique</b> — et toute la journée, il n'a pu que jeter un œil dehors pour nous parler. Mais ÇA… ce sont des <b>casques</b> magiques. Dès qu'ils couvrent vos yeux, Caine peut enfin vous emmener COMPLÈTEMENT dans son monde, pour une VRAIE aventure ! Une seule règle pour rentrer à la maison : vous finissez l'aventure <b>tous ensemble</b>. Casques sur les yeux, on ne triche pas… dans 3… 2… 1… ! »</div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="h">While their eyes are covered 🤫</div>
+    Play console steps 1–2 (Caine's voice keeps them still and giddy), and while it talks, you and one helper move quietly around the circle and <b>press a character badge onto each kid's shirt</b> (Nora = Pomni). Takes ~20 seconds with two of you. Don't tell them who they are yet — that's the reveal.
+  </div>
+
+  <p><b>Caine's big arrival</b> — console step 2 plays it (or boom it yourself), while their eyes are still covered and you're sticking on the badges:</p>
+
+  <div class="caine">
+    <div class="who">🤡 CAINE (big theatrical voice)</div>
+    <div class="say">
+      <div class="en"><span class="lbl en">EN</span> "OH-HO-HOOO! NEW PLAYERS! How <i>delightful!</i> Welcome, welcome to the Amazing Digital Circus! I am <b>CAINE</b>, your magnificent ringmaster! Do you like adventure? Activity? WONDER?? Hee-hee! Today's adventure is………… <b>GATHER THE GLOINKS!</b> Collect FOUR magical Gloinks, unlock the Exit Door, and win the greatest treasure of all! But first… my circus has turned each of you into a brand-new character! You don't even know who you are yet… On the count of three, push your headset up and MEET YOURSELF! 3… 2… 1… <b>EYES OPEN!</b>"</div>
+      <div class="fr"><span class="lbl fr">FR</span> « OH-HO-HOOO ! DE NOUVEAUX JOUEURS ! Quel <i>délice !</i> Bienvenue, bienvenue au cirque numérique ! Je suis <b>CAINE</b>, votre magnifique présentateur ! Vous aimez l'aventure ? L'action ? L'ÉMERVEILLEMENT ?? Hi-hi ! L'aventure du jour, c'est………… <b>RASSEMBLEZ LES GLOINKS !</b> Trouvez QUATRE Gloinks magiques, ouvrez la Porte de Sortie, et gagnez le plus grand trésor de tous ! Mais d'abord… mon cirque a transformé chacun de vous en un nouveau personnage ! Vous ne savez même pas encore qui vous êtes… À trois, relevez votre casque et DÉCOUVREZ QUI VOUS ÊTES ! 3… 2… 1… <b>OUVREZ LES YEUX !</b> »</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="h">The reveal — eyes open! ✨</div>
+    Kids push the mask up and discover the badge on their chest. Go round announcing each like a showman (the Console/Caine audio names them too): <b>Nora = Pomni</b> (hero) · <b>Leo = Jax</b> · <b>Hugo = Kinger</b> · <b>Chloé = Ragatha</b> · <b>Sasha = Zooble</b>. <span class="muted">(If Nina comes = Gangle; Max = Gummigoo.)</span> Now they're players — keep the mask on their forehead like goggles for the teleports.
+  </div>
+  <div class="callout warn">
+    <div class="h">⚠️ The stakes — make it feel BIG &amp; important</div>
+    Now that they're characters, set the danger so they feel like heroes on a mission: a player who <b>gives up or wanders off alone gets ABSTRACTED</b> (glitched into a scribble, like in the show!). The <i>only</i> way home is to gather all 4 Gloinks <b>together</b>. Lean into it: "stay together or the glitch gets you!" Play this right after the reveal, and the <b>⚠️ Story &amp; stakes</b> phrases (incl. <b>Stay together!</b>) whenever you need to re-grip the room:
+    <div class="trigrow" data-host="stakes"></div>
+    <div class="trigrow" data-host="abstract_warn together"></div>
+  </div>
+  <div class="callout tip">
+    <div class="h">Older kids = equal players</div>
+    Leo (Jax) and Sasha (Zooble) are 9 — treat them <b>exactly like the others</b>: hunting Gloinks and playing every game alongside the little ones (Leo keeps the PURPLE Gloink, an equal keeper). If one fancies it, an older kid can do a short, fun <b>villain</b> cameo (the Candy Bandit / the Glitch) that ends with them <i>joining</i> the team — only if they want to, never a designated loser.
+  </div>
+  <div class="callout tip">
+    <div class="h">Voice tip</div>
+    Easiest of all: let the <b>Caine Console</b> speak these lines for you (in Caine's voice, with the kids' names) while you just play Bubble and press NEXT. See the Prep tab to set it up. Doing it live is totally fine too — these scripts are exactly what the console says.
+  </div>
+
+  <hr class="divider">
+
+  <h2><span class="ic">🗺️</span> Step 2 — The 4 Stations (~8 min each)</h2>
+  <p class="muted small">Do the stations in the <b>numbered order ①→②→③→④</b> — the Exit-Door code is the order the Gloinks are found (RED→YELLOW→PURPLE→BLUE), so the running order matters. At each one, the kids finish the challenge → they <b>hunt for that station's hidden Gloink</b> → Caine names its keeper → it's carried onward to the Exit Door. Each station nods to a real Digital Circus episode, so fans will grin.</p>
+  <p class="small muted">🔍 <b>Hunt helpers</b> (play any time the kids are searching for a Gloink):</p>
+  <div class="trigrow" data-host="gloink_hunt gloink_warm"></div>
+
+  <!-- Station 1 -->
+  <div class="station">
+    <div class="head">
+      <div class="num">1</div>
+      <div>
+        <div class="nm">Candy Canyon Kingdom</div>
+        <div class="rf">↳ nods to Episode 2 "Candy Carrier Chaos"</div>
+      </div>
+    </div>
+    <div class="inner">
+      <div class="meta">
+        <span class="pill">📍 <b>Garden / lawn</b></span>
+        <span class="pill">⏱ ~7 min</span>
+        <span class="pill">Reward: <b style="color:var(--red)">RED Gloink</b></span>
+      </div>
+      <p><b>Game — "Catch the Candy, beat the Bandit."</b> Before the round, scatter lots of <b>sealed wrapped</b> candies across the lawn — that's the Bandit's <b>stolen stash</b>. Mark a <b>base</b> for the players with their <b>bucket</b> on it. You are the <b>Candy Bandit</b> (sash on), prowling and <b>guarding</b> your scattered loot. On GO, the kids have <b>120 seconds</b> to grab every candy and get it home to their base bucket. They'll have to <b>team up and strategise</b> — some <b>distract you</b> out front while others <b>sneak in from behind</b>. <b>If you tag a player, they must run all the way back to base</b> (dropping any candy they were holding) before they can come out again. Defend hard — but lose <i>gloriously</i> right before the timer ends. Then the round is won!</p>
+      <p class="small muted">🟩 <i>Subtle wink:</i> it's a raid on the Bandit's chest — grab the loot and stash it in your own base before he catches you.</p>
+      <p class="small muted">⚠️ Lawn candy has been handled and sat in the sun — keep separate, fresh wrapped candy for the goodie bags.</p>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> "Welcome to the Candy Canyon Kingdom! That sneaky Candy Bandit has scattered his STOLEN candy everywhere and he's guarding it! Grab it all back to your base bucket before time runs out — and if the Bandit tags you, run back to base! Team up and trick him… GO!"</div>
+        <div class="fr"><span class="lbl fr">FR</span> « Bienvenue au Royaume du Canyon de Bonbons ! Ce sournois Bandit des Bonbons a éparpillé ses bonbons VOLÉS partout et il les garde ! Rapportez-les tous dans le seau de votre base avant la fin du temps — et si le Bandit vous touche, retournez à la base ! Faites équipe et rusez… ALLEZ ! »</div>
+      </div>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> <i>On winning:</i> "You beat the bandit! Now a little RED Gloink is hiding nearby — look high, look low, and FIND him! One down, three to go!" <span class="muted">(then Caine names <b>Chloé</b> the keeper — the kids hand it to her.)</span></div>
+        <div class="fr"><span class="lbl fr">FR</span> <i>En gagnant :</i> « Vous avez battu le bandit ! Un petit Gloink ROUGE se cache tout près — cherchez en haut, en bas, et TROUVEZ-le ! Un de pris, plus que trois ! »</div>
+      </div>
+      <p class="small muted">Kids keep the candy (loot-bag filler / piñata stuffing). Soft target so everyone wins.</p>
+    </div>
+  </div>
+
+  <!-- Station 2 -->
+  <div class="station">
+    <div class="head">
+      <div class="num">2</div>
+      <div>
+        <div class="nm">Caine's Impossible Burger</div>
+        <div class="rf">↳ nods to Episode 4 "Fast Food Masquerade"</div>
+      </div>
+    </div>
+    <div class="inner">
+      <div class="meta">
+        <span class="pill">📍 <b>Terrace table</b></span>
+        <span class="pill">⏱ ~7 min</span>
+        <span class="pill">Reward: <b style="color:var(--yellow)">YELLOW Gloink</b></span>
+      </div>
+      <p><b>Game — two-team burger "craft-off."</b> Print TWO sets of burger pieces, shuffle each in a pile. Split into two small teams; on "GO" <b>everyone grabs pieces at once</b> and the team works together to <i>craft</i> the burger in the right stack order (bottom bun → patty → cheese → lettuce → tomato → top bun). No single-file queue — all hands building. Both teams finish → the hungry Fast-Food "manager" is happy → YELLOW Gloink. (Few kids? One team racing the clock works too.)</p>
+      <p class="small muted">🟩 <i>Subtle Minecraft wink:</i> the pieces are the "recipe" — stack them in the right order like a crafting table to make it work.</p>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> "Welcome to Caine's Fast Food! The manager wants a perfect burger — bottom bun, patty, cheese, lettuce, tomato, top bun. Team, all hands — build it… NOW!"</div>
+        <div class="fr"><span class="lbl fr">FR</span> « Bienvenue au Fast Food de Caine ! La gérante veut un burger parfait — pain du bas, steak, fromage, salade, tomate, pain du haut. L'équipe, tous ensemble — construisez-le… MAINTENANT ! »</div>
+      </div>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> <i>On winning:</i> "A perfect burger! Now a YELLOW Gloink is hiding nearby — hunt high and low and find him! That's TWO!" <span class="muted">(then Caine names <b>Hugo</b> the keeper — hand it to him.)</span></div>
+        <div class="fr"><span class="lbl fr">FR</span> <i>En gagnant :</i> « Un burger parfait ! Un Gloink JAUNE se cache tout près — cherchez partout et trouvez-le ! Ça fait DEUX ! »</div>
+      </div>
+      <p class="small muted">Younger kids: skip the "correct order" rule, just stack it.</p>
+    </div>
+  </div>
+
+  <!-- Station 3 -->
+  <div class="station">
+    <div class="head">
+      <div class="num">3</div>
+      <div>
+        <div class="nm">The Mystery of Mildenhall Manor</div>
+        <div class="rf">↳ nods to Episode 3 "The Mystery of Mildenhall Manor"</div>
+      </div>
+    </div>
+    <div class="inner">
+      <div class="meta">
+        <span class="pill">📍 <b>A bedroom, curtains drawn</b></span>
+        <span class="pill">⏱ ~7 min</span>
+        <span class="pill">Reward: <b style="color:var(--purple)">PURPLE Gloink</b></span>
+      </div>
+      <p><b>Game — find the 15 glowing stars (90s), then a riddle.</b> Dim a bedroom (curtains drawn / Ch.3 or Ch.4). <b>Before the party</b>, hide <b>15 glow-in-the-dark / fluorescent stars</b> around the room. On GO, the kids have <b>90 seconds</b> to find <b>all 15</b> in the dark — count them down out loud. Once all 15 are in, press <b>Next</b>: Caine congratulates them and <b>reads a riddle</b> that points to where the PURPLE Gloink is hidden.</p>
+      <p class="small muted">🟩 <i>Tip:</i> "charge" the stars under a bright lamp for a few minutes first so they glow strongly, then kill the lights just before GO.</p>
+      <p class="small muted">⚠️ Dry feet before this room (tile + wet feet = slips). Keep "spooky" gentle for the little ones.</p>
+      <div class="callout">
+        <div class="h">Riddle to find the Gloink (Caine reads it on the console — shown here too)</div>
+        <div class="say">
+          <div class="en"><span class="lbl en">EN</span> "We come as a pair and we cover your toes, we keep them all warm wherever feet go. We sleep folded up somewhere cosy and deep — find where WE live, and the Gloink you will keep!" <span class="muted">(Answer: <b>SOCKS</b> → the sock drawer. Hide the PURPLE Gloink <b>deep inside a sock drawer, tucked right under the socks</b>.)</span></div>
+          <div class="fr"><span class="lbl fr">FR</span> « On va par deux pour couvrir tes orteils, et on les tient au chaud, quel beau travail ! On dort bien pliées tout au fond, à l'abri — trouvez où NOUS vivons, et le Gloink est ici ! » <span class="muted">(Réponse : les <b>CHAUSSETTES</b> → le tiroir à chaussettes. Cachez le Gloink VIOLET tout au fond, sous les chaussettes.)</span></div>
+        </div>
+      </div>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> "Welcome to the spooky Mildenhall Manor… ooooh! Somewhere in this dark room are FIFTEEN glowing stars — find every one before your 90 seconds run out!"</div>
+        <div class="fr"><span class="lbl fr">FR</span> « Bienvenue au manoir mystérieux de Mildenhall… ouuuh ! Quelque part dans cette pièce sombre, il y a QUINZE étoiles brillantes — trouvez-les toutes avant la fin de vos 90 secondes ! »</div>
+      </div>
+      <p class="small muted">Calmer, suspenseful station — good pacing right after two loud ones. Keep "spooky" gentle for the little ones.</p>
+    </div>
+  </div>
+
+  <!-- Station 4 -->
+  <div class="station">
+    <div class="head">
+      <div class="num">4</div>
+      <div>
+        <div class="nm">Don't Get Abstracted!</div>
+        <div class="rf">↳ nods to "abstraction" + Ep 6 "They All Get Guns" (soft version)</div>
+      </div>
+    </div>
+    <div class="inner">
+      <div class="meta">
+        <span class="pill">📍 <b>Garden / pool deck</b></span>
+        <span class="pill">⏱ ~7 min</span>
+        <span class="pill">Reward: <b style="color:var(--blue)">BLUE Gloink</b></span>
+      </div>
+      <p><b>Game — dodge Bubble the Glitch (hand-tag freeze-tag).</b> <b>YOU are the glitch</b> — chase the kids and tag them with your <b>hands</b> (no throwing anything). If Bubble tags a player, they're "abstracted" → they <b>FREEZE</b> in a funny statue pose until a free teammate <b>high-fives them back to life</b>. Survive ~90 seconds as a team → on to the Human Test. Go gently with the little ones; make yourself "lag" and lose dramatically.</p>
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> "Uh oh — BUBBLE is glitching! Dodge his glitchy hands! If Bubble tags you, FREEZE like a statue — a friend can high-five you free. Survive together… GO!"</div>
+        <div class="fr"><span class="lbl fr">FR</span> « Oh non — BUBBLE bugue ! Esquivez ses mains qui buguent ! Si Bubble vous touche, FIGEZ-VOUS comme une statue — un copain peut vous libérer en tapant dans la main. Survivez ensemble… ALLEZ ! »</div>
+      </div>
+
+      <div class="callout">
+        <div class="h">🧠 The Human Test — prove you're human! (run it now, before the last Gloink)</div>
+        They survived the glitch — so Caine must check they're real humans, not glitches! <b>You pick the questions</b> from the list below (the kids' iPad never shows them). First play <b>Intro</b>, then ask questions one at a time. <b>Every player must get at least one right</b>; once a player is "confirmed human", let the others have a go. Tap <b>Correct!</b> after a right answer for a laugh. When everyone's passed, play <b>All human!</b> — then press <b>NEXT</b> on the console for the final Gloink.
+        <div class="trigrow" data-host="human_test human_correct human_pass"></div>
+        <p class="small muted" style="margin:8px 0 2px"><b>🎪 About the circus</b> (answers in grey):</p>
+        <div class="qa"><div class="trigrow" data-host="trivia_q1"></div><span class="ans">Caine</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q2"></div><span class="ans">Gloinks</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q3"></div><span class="ans">Abstracted</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q4"></div><span class="ans">Candy Canyon</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q5"></div><span class="ans">Four</span></div>
+        <p class="small muted" style="margin:8px 0 2px"><b>🌍 General</b> (7–10 yr):</p>
+        <div class="qa"><div class="trigrow" data-host="trivia_q6"></div><span class="ans">8 legs</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q7"></div><span class="ans">Green</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q8"></div><span class="ans">Honey</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q9"></div><span class="ans">7</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q10"></div><span class="ans">Ice</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q11"></div><span class="ans">Jupiter</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q12"></div><span class="ans">Butterflies</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q13"></div><span class="ans">Lion</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q14"></div><span class="ans">7</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q15"></div><span class="ans">Puppy</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q16"></div><span class="ans">Cheetah</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q17"></div><span class="ans">3</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q18"></div><span class="ans">Earth</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q19"></div><span class="ans">The Sun</span></div>
+        <div class="qa"><div class="trigrow" data-host="trivia_q20"></div><span class="ans">12</span></div>
+      </div>
+
+      <div class="say">
+        <div class="en"><span class="lbl en">EN</span> <i>After the Human Test (press Next):</i> "Now, my wonderful HUMANS — the very last Gloink, the BLUE one, is hiding nearby! Find him and that's ALL FOUR! Quick — to the Exit Door!" <span class="muted">(Caine names <b>Nora</b> keeper of the winning Gloink — hand it to her!)</span></div>
+        <div class="fr"><span class="lbl fr">FR</span> <i>Après le Test Humain (appuyez sur Suivant) :</i> « Maintenant, mes merveilleux HUMAINS — le tout dernier Gloink, le BLEU, se cache tout près ! Trouvez-le et ÇA FAIT LES QUATRE ! Vite — à la Porte de Sortie ! »</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h2><span class="ic">🚪</span> Step 3 — Escape, the Treasure &amp; Cake (~7 min)</h2>
+  <p class="pin">📍 Caine teleports everyone UP to the <b>Exit Door = the decorated upstairs guest toilet door</b>. iPad ready.</p>
+  <p>After the last Gloink, lead the team upstairs (goggles down, march up). On arrival, tap <b>NEXT</b> — Caine lands the teleport and reveals the <b>Exit Door</b> + the <b>Gloink Code</b> puzzle on the iPad.</p>
+
+  <div class="caine">
+    <div class="who">🤡 CAINE (teleport + the code puzzle)</div>
+    <div class="say">
+      <div class="en"><span class="lbl en">EN</span> "…3… 2… 1… ZAP! Goggles UP — there it is, the mighty EXIT DOOR! All four Gloinks are here, but the door needs the secret Gloink CODE. Tap the four colours… let me see… BLUE… PURPLE… YELLOW… RED… ahh, but in WHICH order?! Only YOU know — think hard: in what order did you find your Gloinks? Take all the time you need!"</div>
+      <div class="fr"><span class="lbl fr">FR</span> « …3… 2… 1… ZAP ! Lunettes en haut — la voilà, la grande PORTE DE SORTIE ! Les quatre Gloinks sont là, mais la porte a besoin du CODE Gloink secret. Tapez les quatre couleurs… voyons voir… BLEU… VIOLET… JAUNE… ROUGE… mais dans QUEL ordre ?! Vous seuls le savez — dans quel ordre avez-vous trouvé vos Gloinks ? Prenez tout le temps qu'il faut ! »</div>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <div class="h">🧩 They must crack it themselves</div>
+    The code is the <b>order they FOUND the Gloinks</b> (<span style="color:var(--red)">RED</span> → <span style="color:var(--yellow)">YELLOW</span> → <span style="color:var(--purple)">PURPLE</span> → <span style="color:var(--blue)">BLUE</span>). <b>Caine never says it</b> and the iPad buttons are <b>shuffled</b>, so tapping left-to-right won't work — they have to remember the order they collected them (first Gloink first!). <b>No time limit, and it never opens by itself.</b> Wrong taps give a gentle nudge (it keeps showing the strongest hint). If you ever need to move on, tap NEXT on your remote. The 4 keepers (each holding a Gloink) can lead the thinking.
+  </div>
+
+  <p>When they tap the right order, the screen glitches then bursts into "EXIT OPEN" confetti. On cue, open the toilet door — they've <b>ESCAPED the circus!</b></p>
+
+  <div class="caine">
+    <div class="who">🤡 CAINE (escape → treasure hunt)</div>
+    <div class="say">
+      <div class="en"><span class="lbl en">EN</span> "The code is COMPLETE! Push the Exit Door… and it swings WIDE OPEN! You did it, my magnificent heroes — you have ESCAPED the Amazing Digital Circus! And now, for your reward… somewhere very close, I have HIDDEN your treasure — a chest full of goodies! Hunt high, hunt low… find your treasure!"</div>
+      <div class="fr"><span class="lbl fr">FR</span> « Le code est COMPLET ! Poussez la Porte de Sortie… et elle s'ouvre EN GRAND ! Vous avez réussi, mes héros — vous vous êtes ÉCHAPPÉS du Cirque Numérique Fantastique ! Et maintenant, votre récompense… tout près, j'ai CACHÉ votre trésor — un coffre plein de surprises ! Cherchez partout… trouvez votre trésor ! »</div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="h">→ the hidden treasure: candy bags 🎁</div>
+    The treasure is a <b>chest/box of candy bags</b> (one per kid) you <b>hid earlier near the top of the stairs</b> — <b>not</b> behind the door. The kids hunt for it; when they find it, every hero grabs their bag. (They take the bags home at goodbye.) Pop a party popper when it's found — Sasha's job!
+  </div>
+
+  <p>Once the treasure's found, tap <b>NEXT</b> — Caine moves the party on to <b>cake</b>:</p>
+
+  <div class="caine">
+    <div class="who">🤡 CAINE (treasure found → cake)</div>
+    <div class="say">
+      <div class="en"><span class="lbl en">EN</span> "You FOUND it — the treasure is YOURS, a goodie bag for every single hero! MAGNIFICENT! And now… do I smell something DELICIOUS? It is CAKE TIME! Everybody, follow Bubble to the birthday cake — and a great big HAPPY BIRTHDAY, Nora!"</div>
+      <div class="fr"><span class="lbl fr">FR</span> « Vous l'avez TROUVÉ — le trésor est à VOUS, un sac de surprises pour chaque héros ! MAGNIFIQUE ! Et maintenant… est-ce que je sens quelque chose de DÉLICIEUX ? C'est l'heure du GÂTEAU ! Tout le monde, suivez Bubble vers le gâteau — et un grand JOYEUX ANNIVERSAIRE, Nora ! »</div>
+    </div>
+  </div>
+
+  <div class="callout tip">
+    <div class="h">🎂 To the cake (set up separately)</div>
+    The cake is set up <b>upstairs</b> (the kitchen &amp; living room are at road level, same floor as the guest-toilet Exit Door), <b>not</b> behind the door. Gather everyone at the cake, light the candles, and launch into "Joyeux anniversaire / Happy Birthday". One big shared finish — everyone still buzzing from the escape.
+  </div>
+</section>
+
+<!-- (Other Games merged into Run of Day as filler-game cards) -->
+
+<!-- ================= PREP ================= -->
+<section id="prep">
+  <h2><span class="ic">🛒</span> Shopping List (one trip)</h2>
+  <p class="muted small">Medium prep. Most props are printable (see Print Pack), so this stays short and cheap.</p>
+  <div class="card">
+    <ul class="check">
+      <li><b>Eye masks ×8</b> — the "headsets". Cheap sleep masks; one per kid + spares.</li>
+      <li><b>4 coloured balls or balloons</b> — RED, YELLOW, PURPLE, BLUE = the Gloinks. (Plush balls or foam are nicest; balloons are cheapest.)</li>
+      <li><b>Extra balloons</b> — for "Don't Get Abstracted" + décor.</li>
+      <li><b>Wrapped candies ×2 lots</b> — one bag of <i>sealed</i> candy for the lawn game, a <b>separate fresh</b> bag to fill the goodie bags (don't reuse lawn candy).</li>
+      <li><b>Candy goodie bags ×8</b> — these are the <b>hidden treasure</b> (one per kid) for the post-escape hunt + keep a few loose spare bags around.</li>
+      <li><b>A box or basket</b> — the "treasure chest" of goodie bags, hidden near the top of the stairs for the treasure hunt.</li>
+      <li><b>15 glow-in-the-dark / fluorescent stars</b> — Mildenhall Manor (charge them under a lamp).</li>
+      <li><b>A sash or cape</b> — for the Candy Bandit / the Glitch (you).</li>
+      <li><b>1–2 party poppers</b> — to pop as the exit door opens.</li>
+      <li><b>Circus décor</b> — red/white stripe tablecloth, gold &amp; purple streamers, star balloons.</li>
+      <li><b>Bubble machine</b> (optional, "Bubble" touch).</li>
+      <li><b>Digital Circus cake</b> + candles — set up <b>separately upstairs</b> (kitchen/living room, road level), not behind the door; Caine calls cake time after the treasure hunt.</li>
+      <li><b>Sticker labels or double-sided tape / clothes-pegs</b> — to press a badge onto each kid's shirt fast during the blindfold reveal (easier &amp; safer than pins while they can't see).</li>
+    </ul>
+  </div>
+
+  <h2><span class="ic">🖨️</span> Print Pack — print these</h2>
+  <div class="card">
+    <p>Get the Print Pack — <a href="Circus-Print-Pack.pdf" target="_blank"><b>📄 Download the A4 PDF</b></a> (ready to print), or open the <a href="Circus-Print-Pack.html" target="_blank"><b>🖨 web version</b></a> (also on the app's home screen). Print on A4 (colour). It contains:</p>
+    <ul>
+      <li><b>7 character badges</b> (Pomni, Jax, Ragatha, Gangle, Kinger, Zooble, Gummigoo) + a <b>Bubble</b> helper badge — 8 cards, one per kid + you.</li>
+      <li><b>4 station signs</b> to tape up at each spot.</li>
+      <li><b>Exit Door sign</b> with the colour code <span style="color:var(--red)">●</span><span style="color:var(--yellow)">●</span><span style="color:var(--purple)">●</span><span style="color:var(--blue)">●</span>.</li>
+      <li><b>Burger pieces</b> for Station 2 (cut them out).</li>
+    </ul>
+  </div>
+
+  <h2><span class="ic">📱</span> iPad — the Caine Console (talking)</h2>
+  <div class="card">
+    <p>The <b>Caine Console</b> is the star: it walks through every adventure step and <b>speaks each one in Caine's voice</b> (English, short pause, then French — in <b>OmniVoice</b>), while it follows your <b>📡 Adventure remote</b> (Adventure tab). The exit-code screen is built in near the end. Start it by double-clicking <span class="kbd">Start Caine Party.bat</span> in the party folder, then on Nora's iPad open the address it prints and tap <b>🎪 Caine's Console</b>.</p>
+    <p class="small muted">On Nora's iPad, tap the big <b>"▶ TAP TO START"</b> once when the console opens — Safari needs one tap before it will play sound. After that every step auto-plays (and your remote here drives it). No audio made yet? It still works — it shows the words to read.</p>
+  </div>
+
+  <h2><span class="ic">🎤</span> "Talk to Caine" — let kids speak to him live</h2>
+  <div class="card">
+    <p>Near the top of the console are two buttons: <b>🎤 Talk to Caine</b> and <b>🎤 Parler à Caine</b>. A child taps one, talks ("Caine, where's my Gloink?"), taps <b>Stop &amp; Send</b> — Caine thinks for a couple of seconds and <b>answers out loud, in his own voice</b>, staying in character and remembering the whole conversation. It works in English <i>and</i> French.</p>
+    <p class="small muted"><b>One-time setup (needed for the microphone):</b> iPads only allow the mic over a <b>secure (https)</b> address. When the server starts it prints a line like<br><span class="kbd">https://192.168.1.x:8766/console</span> — open <b>that</b> address on Nora's iPad (not the plain http one), and the first time tap through Safari's "Not Private" warning (<b>Show details → visit this website</b>). After that the mic buttons work. The plain http address is fine for everything else.</p>
+    <p class="small muted"><b>On the laptop:</b> the console uses <b>Claude (your subscription)</b> to write Caine's replies and your warmed-up <b>OmniVoice</b> to speak them — no per-use cost. If a reply ever can't be voiced it still shows Caine's words on screen. If the buttons say the mic needs the https address, you opened the plain http one — switch to the https link above.</p>
+  </div>
+
+  <h2><span class="ic">🎙️</span> Make Caine's voice say their names</h2>
+  <div class="card">
+    <p><b>One script does it all.</b> Put a short clean Caine clip named <span class="kbd">caine_ref.wav</span> in the <span class="kbd">caine-voice</span> folder, then run <span class="kbd">python make_caine_voice.py</span>. It generates every line with the <b>kids' names baked in</b> — a personality intro for each one ("Chloé, you are RAGATHA, the kindest ragdoll!"), a different kid named to carry each Gloink, and "Happy birthday, Nora!" — into <span class="kbd">caine-console/audio/</span>.</p>
+    <p class="small muted"><b>Languages:</b> general lines + Nora &amp; Leo get English then French (short pause between); the other kids get French only. The chosen voice is <b>OmniVoice</b> (best, native French); F5 &amp; IndexTTS-2 are also available to compare/tune in the <b>🎛 Voice Studio</b>.</p>
+    <p class="small muted"><b>Both attendance scenarios are baked in</b> — audio for Nina &amp; Max is generated too, so you just flip <span class="kbd">present:true/false</span> in the console's ROSTER on the day. No re-running. No Python? Use the Colab notebook. Full steps + model notes in <span class="kbd">caine-voice/README.md</span>.</p>
+    <p class="small muted">Worth doing a few days early — it's the bit the kids will talk about. Optional: skip it and read Caine's lines yourself, or record your own voice as the reference clip.</p>
+  </div>
+
+  <h2><span class="ic">🌙</span> The night before — 15-min checklist</h2>
+  <div class="card">
+    <ul class="check">
+      <li>Hide the 4 Gloinks near each station.</li>
+      <li>Tape up the 4 station signs + Exit Door sign.</li>
+      <li>Decorate the <b>upstairs guest-toilet</b> Exit Door; hide the <b>treasure chest</b> of candy bags near the top of the stairs; set up the <b>cake separately upstairs</b> (kitchen/living room).</li>
+      <li>Cut out burger pieces; charge &amp; hide the 15 Manor stars + hide the PURPLE Gloink deep in a sock drawer.</li>
+      <li>Charge the iPad; open the <b>Caine Console</b>; check the audio plays and test the colour code (buttons are shuffled — the answer is the order the Gloinks are found).</li>
+      <li>Fill the candy goodie bags (+ have loose candy bags spare). Set masks + badges aside <b>for the adventure</b> — not at the entrance.</li>
+      <li>Make a 30-sec playlist; have a glass of water for the Bubble patter. 🫧</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ================= CHEAT SHEET ================= -->
+<section id="cheat">
+  <h2><span class="ic">⚡</span> Cheat Sheet</h2>
+  <p class="muted small">The whole day at a glance — glance at this during the party.</p>
+
+  <div class="card">
+    <h3>⏱ Timeline</h3>
+    <p class="small">11:00 slide · <b>12:00 lunch</b> · 12:40 Welcome Circle (hype) · 13:00 free time · 13:30 Caine Says + filler games · <b>14:15 ADVENTURE (~50min)</b> · <b>15:00 escape → treasure → cake</b> · 15:30 presents · 16:00 slide + free play · 16:45 goodbye.</p>
+  </div>
+
+  <div class="card">
+    <h3>🎪 Adventure flow</h3>
+    <p class="small"><b>Masks on (blind)</b> → stick badges on secretly → Caine intro → <b>"EYES OPEN!"</b> reveal → masks become goggles →
+    <b>walk route</b> Garden ① → pool ④ → terrace ② → bedroom ③ → UP to the Exit Door (guest toilet); Caine speaks the <b>teleport</b> on arrival at each station.<br>
+    Stations: ① Candy Canyon = <span style="color:var(--red)">RED</span> · ② Burger = <span style="color:var(--yellow)">YEL</span> · ③ Manor = <span style="color:var(--purple)">PUR</span> · ④ Abstracted = <span style="color:var(--blue)">BLU</span>.<br>
+    After ④: <b>Human Test</b> (trivia) → teleport UP to the Exit Door → <b>crack the code</b> (= the order you found the Gloinks; buttons shuffled, no time limit) → <b>ESCAPE</b> → hunt the <b>hidden treasure</b> → <b>CAKE</b> + party popper.</p>
+  </div>
+
+  <div class="card">
+    <h3>🤡 Caine starter lines</h3>
+    <p class="small"><b>EN:</b> "OH-HO-HOOO! New players! Today's adventure is… GATHER THE GLOINKS!"<br>
+    <b>FR:</b> « OH-HO-HOOO ! De nouveaux joueurs ! L'aventure du jour : RASSEMBLEZ LES GLOINKS ! »</p>
+    <p class="small"><b>Finale EN:</b> "Today the exit is REAL, and it is DELICIOUS!"<br>
+    <b>Finale FR:</b> « Aujourd'hui la sortie est VRAIE, et elle est DÉLICIEUSE ! »</p>
+  </div>
+
+  <div class="card">
+    <h3>🧑‍🤝‍🧑 Characters</h3>
+    <p class="small"><b>You = Bubble</b> (hold the Caine Console, press NEXT, run the games) · <b>Nora = Pomni</b> · <b>Leo = Jax</b> · <b>Hugo = Kinger</b> · <b>Chloé = Ragatha</b> · <b>Sasha = Zooble</b> (new, 9yo). If Nina comes = Gangle; Max = Gummigoo.</p>
+  </div>
+
+  <div class="card">
+    <h3>🆘 If it wobbles</h3>
+    <p class="small">Too rowdy → Caine Says or Manor (calm). Running late → drop Burger. Code stuck → the iPad keeps nudging (it never opens itself); tap NEXT on your remote to move on. Kid overwhelmed → let them sit out a station, they rejoin at the treasure hunt. <b>Never skip the cake.</b></p>
+    <p class="small"><b>Give everyone a hero job</b> (so nobody just watches): the 4 Gloink keepers (Chloé = RED, Hugo = YELLOW, Leo = PURPLE, Nora = BLUE) each find &amp; carry their Gloink and help the team recall the code order; for the rest (<b>Sasha</b>, plus Nina/Max if they come), give "lead the hunt", "popper-popper". Let <b>Sasha</b> find the last glowing star in the Manor; <b>Nora</b> pushes the Exit Door open (the star leads the escape!) and <b>Sasha</b> pops the party-popper when the treasure is found.</p>
+  </div>
+</section>
+
+</main>
+
+<div id="nowbar">
+  <span class="eq">🔊</span><span class="lbl" id="nowlbl">—</span>
+  <button onclick="stopHost()">■ Stop</button>
+</div>
+
+<footer>
+  Made for Nora's 7th 🎂 · ◉‿◉ The Amazing Digital Circus<br>
+  Tip: add this page to your phone's Home Screen for one-tap access on the day.
+</footer>
+
+<script src="caine-host-phrases.js"></script>
+<script>
+  const $=s=>document.querySelector(s);
+  const HOST_VOICE='omnivoice';
+  const PH={}; (window.HOST_PHRASES||[]).forEach(p=>PH[p.key]=p);
+  const hostAudio=new Audio();
+
+  /* ---- soundboard + trigger buttons (EN / FR / BOTH, queued, with wave) ---- */
+  let hostQueue=[], hostKey=null, hostBtn=null;
+  function clearPlaying(){ document.querySelectorAll('.trig.playing').forEach(b=>b.classList.remove('playing')); }
+  function playHost(key,mode,btn){               // mode: 'en' | 'fr' | 'both'
+    const p=PH[key]; if(!p) return;
+    clearPlaying(); if(btn) btn.classList.add('playing');
+    if(window._sonosOn){                         // play on the Sonos (Announce) instead of the tablet
+      const clips=(mode==='both')?[[key,'en'],[key,'fr']]:[[key,mode]];
+      $('#nowlbl').innerHTML=`<b>Caine</b> on Sonos 🔈 — ${p.label} · ${mode.toUpperCase()}`;
+      $('#nowbar').style.display='flex'; $('#nowbar').classList.add('on');
+      fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'play',clips})})
+        .then(r=>r.json()).then(d=>{ if(!d.ok) $('#nowlbl').textContent='⚠ Sonos: '+(d.info||'failed'); })
+        .catch(()=>{ $('#nowlbl').textContent='⚠ Sonos unreachable — is the server on the same WiFi?'; });
+      setTimeout(clearPlaying, 4000);
+      return;
+    }
+    hostKey=key; hostBtn=btn||null; hostQueue=(mode==='both')?['en','fr']:[mode];
+    nextHost();
+  }
+  function nextHost(){
+    if(!hostQueue.length){ stopHost(); return; }
+    const lang=hostQueue.shift(); const p=PH[hostKey];
+    hostAudio.pause(); hostAudio.src=`caine-console/audio/${HOST_VOICE}/host_${hostKey}_${lang}.wav`; hostAudio.currentTime=0;
+    $('#nowlbl').innerHTML=`<b>Caine</b> — ${p.label} · <span style="color:${lang==='fr'?'var(--magenta)':'var(--cyan)'};font-weight:800">${lang.toUpperCase()}</span>`;
+    $('#nowbar').style.display='flex'; $('#nowbar').classList.add('on');
+    hostAudio.play().catch(()=>{ if(hostBtn){ hostBtn.classList.add('miss'); setTimeout(()=>hostBtn.classList.remove('miss'),1000);} $('#nowlbl').textContent='⚠ not generated yet — run OmniVoice in the Studio'; hostQueue=[]; });
+  }
+  function stopHost(){ hostQueue=[]; hostAudio.pause(); $('#nowbar').style.display='none'; $('#nowbar').classList.remove('on'); clearPlaying(); }
+  hostAudio.addEventListener('ended',()=>{ if(hostQueue.length){ setTimeout(nextHost,300);} else { stopHost(); } });
+  document.addEventListener('click',e=>{ const b=e.target.closest('.trig[data-k]'); if(b) playHost(b.dataset.k,b.dataset.m,b); });
+
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  function btns(k){    // EN / FR (row 1) + full-width EN+FR (row 2)
+    return `<button class="trig en" data-k="${k}" data-m="en">🔊 EN</button>`+
+           `<button class="trig fr" data-k="${k}" data-m="fr">🔊 FR</button>`+
+           `<button class="trig both" data-k="${k}" data-m="both">EN + FR</button>`;
+  }
+  function prow(k){    // 3 buttons LEFT, EXACT spoken text RIGHT
+    const p=PH[k];
+    const txt = p
+      ? `<div class="plabel">${esc(p.label)}</div><div class="pen">${esc(p.en)}</div>`+(p.fr?`<div class="pfr">${esc(p.fr)}</div>`:'')
+      : `<div class="plabel">${esc(k)}</div><div class="pen" style="color:var(--muted)">(not generated yet — run the voices)</div>`;
+    return `<div class="prow"><div class="pbtns">${btns(k)}</div><div class="ptext">${txt}</div></div>`;
+  }
+  function mountTriggers(){
+    document.querySelectorAll('[data-host]').forEach(el=>{
+      const keys=el.dataset.host.split(/\s+/).filter(Boolean);
+      el.innerHTML=keys.map(prow).join('');
+    });
+  }
+  function renderBoard(){
+    const wrap=$('#boardWrap'); if(!wrap) return;
+    if(!window.HOST_PHRASES){ wrap.innerHTML='<p class="muted">Soundboard not generated yet. Open the Voice Studio and run OmniVoice once.</p>'; return; }
+    const cats={}; window.HOST_PHRASES.forEach(p=>{ (cats[p.cat]=cats[p.cat]||[]).push(p); });
+    wrap.innerHTML=Object.keys(cats).map(cat=>`<div class="board-group"><h3>${esc(cat)}</h3>`+
+      cats[cat].map(p=>prow(p.key)).join('')+`</div>`).join('');
+  }
+
+  /* ---- type-your-own-line (server TTS) + saved manual clips (persisted) ---- */
+  const mAudio=new Audio(); let mPlaying=null, _clips=[];
+  function mResetBtns(){ document.querySelectorAll('.mclip.playing').forEach(e=>e.classList.remove('playing')); }   // icon is CSS-drawn from .playing
+  mAudio.addEventListener('ended',()=>{ mResetBtns(); mPlaying=null; });
+  function mclipHtml(c){
+    return `<div class="mclip" data-id="${c.id}">`+
+      `<button class="mplay" onclick="mPlay('${c.id}',this)" aria-label="play / pause"></button>`+
+      `<div class="mtxt"><span class="mlang ${c.lang==='fr'?'fr':'en'}">${(c.lang||'en').toUpperCase()}</span>${esc(c.text)}</div>`+
+      `<button class="mdel" onclick="mDel('${c.id}')" title="Delete this line">✕</button></div>`;
+  }
+  function renderClips(){
+    const box=$('#manualClips'); if(!box) return;
+    box.innerHTML = _clips.length ? _clips.slice().reverse().map(mclipHtml).join('')
+      : '<p class="muted small" style="margin:8px 0 0">No saved lines yet — type one above. ✨</p>';
+  }
+  async function loadClips(){
+    try{ const d=await (await fetch('/api/clips')).json(); _clips=d.clips||[]; renderClips();
+      if($('#ttsGo')) $('#ttsGo').disabled=!d.ready;
+      if($('#ttsStatus')) $('#ttsStatus').textContent = d.ready?'':'Caine’s voice is warming up…';
+    }catch(e){ if($('#ttsStatus')) $('#ttsStatus').textContent='(start the Party Server to use this)'; }
+  }
+  function mPlay(id,btn){
+    const c=_clips.find(x=>x.id===id); if(!c) return;
+    if(!btn){ btn=document.querySelector(`.mclip[data-id="${id}"] .mplay`); }
+    if(window._sonosOn){   // route a typed line to the Sonos, exactly like the soundboard does
+      mResetBtns(); if(btn){ const row=btn.closest('.mclip'); if(row) row.classList.add('playing'); }
+      fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'play',url:c.src})})
+        .then(r=>r.json()).then(d=>{ if(!d.ok){ mResetBtns(); mAudio.src=c.src; mAudio.play().catch(()=>{}); } })   // fall back to local if Sonos fails
+        .catch(()=>{ mResetBtns(); mAudio.src=c.src; mAudio.play().catch(()=>{}); });
+      setTimeout(mResetBtns, 6000);   // Sonos gives no 'ended' event — clear the icon after a bit
+      return;
+    }
+    if(mPlaying===id){ mAudio.pause(); mPlaying=null; mResetBtns(); return; }   // toggle pause
+    mResetBtns();
+    mAudio.src=c.src; mAudio.currentTime=0; mAudio.play().catch(()=>{});
+    mPlaying=id; if(btn){ const row=btn.closest('.mclip'); if(row) row.classList.add('playing'); }   // pause icon via CSS
+  }
+  function mDel(id){
+    if(mPlaying===id){ mAudio.pause(); mPlaying=null; }
+    fetch('/api/clips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id})})
+      .then(()=>{ _clips=_clips.filter(c=>c.id!==id); renderClips(); }).catch(()=>{});
+  }
+  async function ttsGen(){
+    const ta=$('#ttsText'), t=(ta.value||'').trim(), lang='en';   // OmniVoice infers the real language from the text; EN config renders both best
+    if(!t){ $('#ttsStatus').textContent='Type a sentence first.'; return; }
+    const go=$('#ttsGo'), old=go.textContent; go.disabled=true; go.textContent='🎤 Recording…';
+    $('#ttsStatus').textContent='Caine is recording your line… (a few seconds)';
+    try{
+      const d=await (await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t,lang})})).json();
+      if(d.ok && d.clip){ _clips.push(d.clip); renderClips(); ta.value=''; $('#ttsStatus').textContent='✓ Saved!';
+        setTimeout(()=>{ if($('#ttsStatus'))$('#ttsStatus').textContent=''; },2500); mPlay(d.clip.id); }
+      else $('#ttsStatus').textContent='⚠ '+(d.error||'failed');
+    }catch(e){ $('#ttsStatus').textContent='⚠ Could not reach the server.'; }
+    go.disabled=false; go.textContent=old;
+  }
+
+  /* ---- adventure remote (drives Nora's console via the Party Server) ---- */
+  let GAME=null, advTs=-1, advPlay=-1;
+  async function advBoot(){
+    try{ GAME=await (await fetch('/api/game')).json();
+      $('#advDots').innerHTML=GAME.steps.map((s,n)=>`<button class="advdot" data-n="${n}" title="${s.title.replace(/"/g,'')}">${n+1}</button>`).join('');
+    }catch(e){}
+    advLoop();
+  }
+  async function advCmd(a){
+    let body={}; if(a==='next')body={action:'next'}; else if(a==='back')body={action:'back'};
+    else if(a==='replay')body={play:1}; else if(typeof a==='number')body={action:'goto',step:a};
+    try{ applyAdv(await (await fetch('/api/adv',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json()); setConn(true);}catch(e){ setConn(false);} }
+  async function advLoop(){ try{ applyAdv(await (await fetch('/api/adv')).json()); setConn(true);}catch(e){ setConn(false);} setTimeout(advLoop,1200); }
+  function applyAdv(d){ advTs=d.ts; const s=GAME&&GAME.steps[d.step];
+    $('#advStepLbl').textContent=`Step ${d.step+1} · ${s?s.title:''}`;
+    const doEl=$('#advDo'); if(doEl) doEl.innerHTML=(s&&s.do)?('👉 <b>You (Bubble):</b> '+esc(s.do)):'';
+    document.querySelectorAll('.advdot').forEach(b=>b.classList.toggle('cur',+b.dataset.n===d.step)); }
+  function setConn(ok){ const el=$('#advConn'); if(!el)return;
+    el.textContent= ok?"● live — driving Nora's iPad":"○ start the Party Server to drive the iPad";
+    el.style.color= ok?'var(--lime)':'var(--muted)'; }
+  document.addEventListener('click',e=>{ const d=e.target.closest('.advdot'); if(d) advCmd(+d.dataset.n); });
+
+  /* ---- Sonos (optional; only works when served by the Party Server) ---- */
+  async function sonosBoot(){ try{ sonosApply(await (await fetch('/api/sonos')).json()); }catch(e){} }
+  function sonosApply(s){
+    window._sonosOn = !!(s.enabled && s.ip);
+    const on=$('#sonosOn'); if(on) on.checked=!!s.enabled;
+    const onT=$('#sonosOnTop'); if(onT) onT.checked=!!s.enabled;                    // top bar checkbox
+    const v=$('#sonosVol'); if(v && s.volume!=null){ v.value=s.volume; }
+    const vT=$('#sonosVolTop'); if(vT && s.volume!=null){ vT.value=s.volume; }       // top bar slider
+    if(s.volume!=null) sonosVolLbl(s.volume);
+    if($('#sonosStatus')) $('#sonosStatus').textContent = s.enabled ? (s.ip?('on · '+s.ip):'on — no speaker found') : 'off';
+    if($('#sonosIp')) $('#sonosIp').textContent = s.ip?('Sonos: '+s.ip):'no speaker yet — tap “Find Sonos”';
+    const stT=$('#sonosStatusTop'); if(stT) stT.textContent = s.enabled ? (s.ip?('ON · '+s.ip):'ON — no speaker found') : (s.ip?('off · '+s.ip):'off — no speaker found');
+    const bar=$('#sonosBar'); if(bar) bar.classList.toggle('son', window._sonosOn);  // green when live
+  }
+  function sonosToggle(on){ fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'enable',on})}).then(()=>sonosBoot()); }
+  function sonosVolLbl(v){ ['#sonosVolLbl','#sonosVolLblTop'].forEach(id=>{ const el=$(id); if(el) el.textContent=v+'%'; });
+    const a=$('#sonosVol'); if(a && +a.value!==+v) a.value=v;                          // keep both sliders in sync
+    const b=$('#sonosVolTop'); if(b && +b.value!==+v) b.value=v; }
+  let _svT=null; function sonosVol(v){ clearTimeout(_svT); _svT=setTimeout(()=>fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'volume',volume:+v})}),200); }
+  function sonosDiscover(){ if($('#sonosStatus'))$('#sonosStatus').textContent='searching…'; fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'discover'})}).then(r=>r.json()).then(()=>sonosBoot()).catch(()=>{ if($('#sonosStatus'))$('#sonosStatus').textContent='⚠ start the Party Server first'; }); }
+  function sonosTest(){ fetch('/api/sonos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'play',clips:[['welcome','en']]})}).then(r=>r.json()).then(d=>{ if(!d.ok && $('#sonosStatus'))$('#sonosStatus').textContent='⚠ '+(d.info||'failed'); }).catch(()=>{}); }
+
+  mountTriggers(); renderBoard(); advBoot(); sonosBoot(); loadClips();
+</script>
+
+<script>
+  const tabs=document.getElementById('tabs');
+  function go(id){
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.t===id));
+    document.querySelectorAll('main section').forEach(s=>s.classList.toggle('active',s.id===id));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  tabs.addEventListener('click',e=>{ if(e.target.dataset.t) go(e.target.dataset.t); });
+  document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();go(a.dataset.go);}));
+</script>
+</body>
+</html>

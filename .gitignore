@@ -1,0 +1,40 @@
+# ── Secrets — never commit ─────────────────────────────────────────────
+SECRETS.env
+*.secret
+
+# ── Generated audio (rebuild any time with caine-voice/make_caine_voice.py) ──
+caine-console/audio/
+
+# ── Your private venue photos / floor plan (drop them in venue/, stay local) ──
+venue/*
+!venue/README.md
+!venue/.gitkeep
+
+# ── Python ─────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+
+# ── Per-model virtual envs + downloaded model weights (multi-GB, rebuildable) ──
+.venv_*/
+caine-voice/.venv_*/
+
+# ── Runtime state the app creates on first run ─────────────────────────
+caine-voice/sonos.json
+caine-voice/knobs.json
+
+# ── Logs & transient build/run artifacts ───────────────────────────────
+logs/
+*.log
+caine-voice/_gen_*
+caine-voice/audit.html
+caine-voice/lines_generated.csv
+caine-voice/clips_manifest.json
+
+# ── Auto-generated reference clips (rebuilt from caine_ref_clean by the engine) ─
+caine-voice/caine_ref_f5.wav
+caine-voice/caine_ref_f5.txt
+caine-voice/caine_ref*_vocals.wav
+caine-voice/caine_ref*_music.wav
+
+# ── scratch render screenshots ─────────────────────────────────────────
+_*.png

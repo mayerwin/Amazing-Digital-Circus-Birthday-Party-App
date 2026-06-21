@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>C.A.I.N.E. CONSOLE</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root{
+    --red:#ff4d57; --yellow:#ffd23f; --purple:#b06bff; --blue:#3ba7ff;
+    --bg:#0c0820; --ink:#eafff9; --cyan:#26e6ff; --magenta:#ff3ba7; --line:#4a2a86;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
+  html,body{height:100%; margin:0;}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:radial-gradient(900px 500px at 50% -10%, #2a0f5e 0%, transparent 60%), var(--bg);
+    color:var(--ink); overflow:hidden; display:flex; flex-direction:column;
+    height:100vh; height:100dvh;}   /* dvh = the ACTUAL visible viewport on iOS, so the bottom NEXT/◀ nav is never hidden behind Safari's toolbar */
+  .scan:before{content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 4px);}
+
+  header{padding:10px 14px 6px; text-align:center; position:relative; z-index:2;}
+  .eyes{font-size:26px; letter-spacing:8px; color:var(--cyan); filter:drop-shadow(0 0 10px var(--cyan));}
+  .eyes.talk{animation:talk .5s infinite;}
+  @keyframes talk{0%,100%{letter-spacing:8px;}50%{letter-spacing:5px; opacity:.85;}}
+  h1{font-size:13px; letter-spacing:4px; margin:2px 0 0; color:#b9a6e8; font-weight:700;}
+
+  .models{display:flex; gap:6px; justify-content:center; margin:8px 14px 0; flex-wrap:wrap; z-index:2;}
+  .models .mlabel{font-size:10px; color:#8a76c0; align-self:center; letter-spacing:1px;}
+  .mbtn{font-size:12px; font-weight:700; padding:5px 11px; border-radius:20px; cursor:pointer;
+        background:#241144; color:#b9a6e8; border:1px solid var(--line);}
+  .mbtn.sel{background:linear-gradient(90deg,var(--magenta),var(--purple)); color:#fff; border-color:transparent;}
+  .mbtn.off{opacity:.35; text-decoration:line-through;}
+
+  .progress{display:flex; gap:4px; justify-content:center; flex-wrap:wrap; margin:8px 16px 0; z-index:2;}
+  .pdot{width:7px; height:7px; border-radius:50%; background:#2c1a52; border:1px solid var(--line);}
+  .pdot.done{background:var(--cyan);} .pdot.cur{background:var(--magenta); transform:scale(1.4);}
+
+  main{flex:1; overflow-y:auto; padding:8px 18px; display:flex; flex-direction:column;
+       align-items:center; justify-content:center; text-align:center; position:relative; z-index:2;}
+  .step-no{font-size:11px; letter-spacing:2px; color:#8a76c0; text-transform:uppercase;}
+  .title{font-size:22px; font-weight:900; margin:5px 0 12px; line-height:1.15;
+     background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));
+     -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .lines{max-width:560px; width:100%; max-height:42vh; overflow-y:auto; scroll-behavior:smooth;
+         -webkit-overflow-scrolling:touch; padding:6vh 0; -webkit-mask-image:linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);
+         mask-image:linear-gradient(180deg,transparent,#000 16%,#000 84%,transparent);}
+  .lines::-webkit-scrollbar{width:0;}
+  .en{font-size:17px; line-height:1.4; margin:9px 0;}
+  .fr{font-size:15px; line-height:1.4; margin:9px 0; color:#d9c7ff;}   /* italic lives on .line.fr .ltext only */
+  .tag{display:inline-block; font-size:10px; font-weight:800; padding:1px 6px; border-radius:5px;
+       margin-right:6px; vertical-align:2px;}
+  .tag.en{background:var(--cyan); color:#062b33;} .tag.fr{background:var(--magenta); color:#3a0322;}
+  .bubble-do{margin-top:14px; background:#10243a; border:1px solid #1d5e86; border-radius:12px;
+     padding:9px 12px; font-size:13.5px; color:#bfe9ff; max-width:560px;}
+  .bubble-do b{color:#fff;}
+
+  .noaudio{font-size:12px; color:#8a76c0; margin-top:8px;}
+  .loading-row{display:flex; align-items:center; justify-content:center; gap:12px; padding:30px 0; font-size:17px; color:#cdbbf2;}
+  .loading-row .spin{width:24px; height:24px; border:3px solid var(--line); border-top-color:var(--cyan); border-radius:50%; animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  /* per-sentence playable lines + live audio wave */
+  .line{display:flex; align-items:center; gap:11px; text-align:left; max-width:560px; width:100%;
+        margin:9px auto; padding:9px 11px; border-radius:14px; background:rgba(22,11,46,.45); border:1px solid transparent;
+        transition:opacity .35s ease, transform .35s ease, background .3s, border-color .3s, box-shadow .3s;}
+  .line.past{opacity:.38; transform:scale(.96);}            /* already played — greyed, above */
+  .line.future{opacity:.3; transform:scale(.96);}          /* upcoming (already revealed once) — dimmed, below */
+  .line.unseen{display:none;}                               /* never played yet — hidden so it can't spoil */
+  .line.current{opacity:1; transform:scale(1);
+        border-color:var(--magenta); background:#2a1150; box-shadow:0 0 22px rgba(255,59,167,.32);}
+  .lplay.ghost{flex:0 0 auto; width:48px; height:48px; visibility:hidden;}
+  .lplay{flex:0 0 auto; width:48px; height:48px; border-radius:50%; border:none; cursor:pointer; padding:0;
+         background:linear-gradient(135deg,var(--magenta),var(--purple)); color:transparent; font-size:0;
+         box-shadow:0 5px 14px rgba(255,59,167,.45); position:relative;}
+  .lplay:active{transform:translateY(2px);}
+  /* play / pause icon drawn in CSS so it's PIXEL-centred (the ▶/⏸ glyphs are off-centre) */
+  .lplay::before,.lplay::after{content:""; position:absolute; top:50%; left:50%;}
+  .lplay::before{ width:0; height:0; border-style:solid; border-width:9px 0 9px 15px;
+        border-color:transparent transparent transparent #fff; transform:translate(-32%,-50%); }  /* ▶ triangle */
+  .lplay::after{ width:0; height:0; }
+  .line.playing .lplay::before{ border:none; width:5.5px; height:18px; background:#fff; border-radius:2px;
+        transform:translate(-50%,-50%) translateX(-4.5px); }                                       /* ⏸ left bar */
+  .line.playing .lplay::after{ width:5.5px; height:18px; background:#fff; border-radius:2px;
+        transform:translate(-50%,-50%) translateX(4.5px); }                                        /* ⏸ right bar */
+  .line .body2{flex:1; min-width:0;}
+  .line.en .ltext{font-size:16.5px; line-height:1.35;}
+  .line.fr .ltext{font-size:15px; line-height:1.35; color:#d9c7ff; font-style:italic;}
+  .wave{display:inline-flex; align-items:flex-end; gap:3px; height:15px; margin-top:7px; opacity:0; transition:opacity .2s;}
+  .wave i{width:3px; height:5px; background:var(--cyan); border-radius:2px;}
+  .line.playing .wave{opacity:1;}
+  .line.playing .wave i{animation:wv .62s ease-in-out infinite;}
+  .line.fr.playing .wave i{background:var(--magenta);}
+  .wave i:nth-child(2){animation-delay:.10s} .wave i:nth-child(3){animation-delay:.20s}
+  .wave i:nth-child(4){animation-delay:.30s} .wave i:nth-child(5){animation-delay:.15s}
+  @keyframes wv{0%,100%{height:5px}50%{height:15px}}
+
+  nav{display:flex; gap:12px; padding:10px 16px calc(12px + env(safe-area-inset-bottom)); z-index:2;}
+  nav button{flex:1; border:none; border-radius:16px; font-size:17px; font-weight:800; padding:17px 0; cursor:pointer;}
+  .back{background:#241144; color:#b9a6e8; flex:0 0 90px;}
+  .next{background:linear-gradient(90deg,var(--cyan),var(--blue)); color:#04212e;}
+  .next:active,.back:active{transform:translateY(2px);}
+
+  .codewrap{display:none; flex-direction:column; align-items:center; width:100%;}
+  .slots{display:flex; gap:10px; justify-content:center; margin:10px 0 16px;}
+  .slot{width:40px; height:40px; border-radius:11px; border:2px dashed var(--line); background:#160b2e;}
+  .slot.fill{border-style:solid; box-shadow:0 0 12px currentColor;}
+  .pad{display:grid; grid-template-columns:1fr 1fr; gap:13px; width:100%; max-width:370px;}
+  .cbtn{height:84px; border:none; border-radius:20px; font-size:16px; font-weight:900; color:#0c0820;
+    box-shadow:0 6px 0 rgba(0,0,0,.35), inset 0 0 26px rgba(255,255,255,.25); cursor:pointer;}
+  .cbtn:active{transform:translateY(3px); box-shadow:0 3px 0 rgba(0,0,0,.35);}
+  .cbtn.red{background:var(--red);} .cbtn.yellow{background:var(--yellow);}
+  .cbtn.purple{background:var(--purple);} .cbtn.blue{background:var(--blue);}
+  .chint{margin-top:12px; color:#b9a6e8; font-size:13px; min-height:18px;}
+  .shake{animation:shk .35s linear;} @keyframes shk{0%,100%{transform:none;}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+  .conf{position:fixed; top:-12px; width:10px; height:16px; z-index:30;}
+  /* shown only over plain HTTP, where the browser blocks the microphone (getUserMedia needs HTTPS) */
+  #httpsBanner{display:none; position:fixed; top:0; left:0; right:0; z-index:300; text-align:center;
+     padding:calc(12px + env(safe-area-inset-top)) 16px 12px; font-weight:800; font-size:15px; line-height:1.3;
+     color:#fff; text-decoration:none; background:linear-gradient(90deg,var(--magenta),var(--purple));
+     box-shadow:0 3px 16px rgba(0,0,0,.5); animation:bpulse 1.6s ease-in-out infinite;}
+  #httpsBanner.show{display:block;}
+  @keyframes bpulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+  /* iOS audio unlock — first tap is required before Safari will play sound */
+  #startup{position:fixed; inset:0; z-index:200; display:flex; flex-direction:column; align-items:center;
+     justify-content:center; gap:18px; text-align:center; padding:24px; cursor:pointer;
+     background:radial-gradient(900px 500px at 50% 30%, #2a0f5e 0%, #0c0820 70%);}
+  #startup .bigeyes{font-size:60px; letter-spacing:14px; color:var(--cyan); filter:drop-shadow(0 0 18px var(--cyan)); animation:talk 1.4s infinite;}
+  #startup .st-title{font-size:26px; font-weight:900; line-height:1.2;
+     background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  #startup .st-go{margin-top:6px; background:linear-gradient(90deg,var(--magenta),var(--purple)); color:#fff;
+     font-weight:900; font-size:22px; padding:18px 40px; border-radius:40px; box-shadow:0 8px 22px rgba(255,59,167,.45); animation:pulse 1.2s infinite;}
+  #startup .st-sub{color:#b9a6e8; font-size:14px;}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  /* Talk to Caine */
+  .talkbar{display:flex; gap:10px; padding:6px 16px 0; z-index:2;}
+  .micbtn{flex:1; border:none; border-radius:16px; font-size:15px; font-weight:800; padding:14px 0; cursor:pointer; color:#06222b;}
+  .micbtn.en{background:linear-gradient(90deg,var(--cyan),#7fe9ff);}
+  .micbtn.fr{background:linear-gradient(90deg,var(--magenta),#ff8ec8); color:#3a0322;}
+  .micbtn.rec{background:#ff3b3b !important; color:#fff !important; animation:recpulse .8s infinite;}
+  .micbtn:disabled{opacity:.5;}
+  @keyframes recpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,59,.6)}50%{box-shadow:0 0 0 9px rgba(255,59,59,0)}}
+  .talkpanel{display:none; max-width:560px; margin:10px auto 0; background:rgba(22,11,46,.6); border:1px solid var(--line);
+     border-radius:14px; padding:11px 13px; text-align:left;}
+  .talk-kid{color:var(--cyan); font-size:13px; margin-bottom:4px;} .talk-kid:empty{display:none;}
+  .talk-reply{color:#fff; font-size:16px; line-height:1.35; font-weight:600;} .talk-reply:empty{display:none;}
+  .talk-think{display:none; color:var(--magenta); font-weight:700;}
+  .talk-think b{color:var(--cyan); filter:drop-shadow(0 0 8px var(--cyan));}
+  .tdots i{animation:td 1.2s infinite; opacity:0;} .tdots i:nth-child(2){animation-delay:.2s} .tdots i:nth-child(3){animation-delay:.4s}
+  @keyframes td{0%,100%{opacity:0}50%{opacity:1}}
+
+  /* ===================== redesign: type & 3D Caine stage ===================== */
+  body{font-family:"Outfit","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;}
+  h1{font-family:"Bungee",system-ui; letter-spacing:3px;}
+  .title{font-family:"Bungee",system-ui; letter-spacing:.5px;}
+  .st-title{font-family:"Bungee",system-ui;}
+  .next,.cbtn{font-family:"Bungee",system-ui; letter-spacing:.5px;}   /* big playful buttons stay marquee */
+  .micbtn{font-size:14px; font-weight:600; letter-spacing:.3px;}      /* mic buttons: clean Outfit, not heavy */
+  .step-no{font-weight:500;}
+
+  /* layout: Caine 3D stage beside the spoken text */
+  main{justify-content:flex-start; gap:6px; padding-top:6px;}
+  #mainContent{display:flex; flex-direction:column; align-items:center; text-align:center; width:100%; max-width:600px;}
+  .caine-stage{width:min(82vw,340px); height:min(38vh,300px); flex:0 0 auto; position:relative;}
+  .caine-stage canvas{filter:drop-shadow(0 10px 26px rgba(38,230,255,.18));}
+  .caine-fallback{display:grid; place-items:center; height:100%; font-size:46px; letter-spacing:12px;
+     color:var(--cyan); filter:drop-shadow(0 0 16px var(--cyan));}
+  .caine-fallback.talk{animation:talk .5s infinite;}
+  @media(min-width:780px) and (orientation:landscape){
+    main{flex-direction:row-reverse; align-items:center; justify-content:center; gap:18px;}
+    /* Caine fills the space to the right of the text, capped (~FHD ratio) so he doesn't drift away on huge screens */
+    .caine-stage{width:min(46vw,560px); height:min(82vh,680px);}
+    #mainContent{align-items:center; max-width:560px; flex:0 1 560px;}
+  }
+  .micbtn{touch-action:none;}   /* push-to-talk: don't scroll while holding */
+</style>
+</head>
+<body class="scan">
+
+<a id="httpsBanner" href="#">🎤 To use “Talk to Caine”, tap here — opens the secure (mic-enabled) page →</a>
+
+<div id="startup">
+  <div class="bigeyes">◉ ‿ ◉</div>
+  <div class="st-title">The Amazing<br>Digital Circus</div>
+  <div class="st-go">▶ TAP TO START</div>
+  <div class="st-sub">Tap once so Caine can talk! 🔊</div>
+</div>
+
+<header>
+  <div class="eyes" id="eyes">◉ ‿ ◉</div>
+  <h1>C.A.I.N.E. CONSOLE</h1>
+</header>
+
+<div class="models" id="models"><span class="mlabel">VOICE:</span></div>
+<div class="progress" id="progress"></div>
+
+<main id="main">
+  <div class="caine-stage" id="caineStage"></div>
+  <div id="mainContent">
+    <div class="step-no" id="stepNo"></div>
+    <div class="title" id="title"></div>
+    <div class="lines" id="lines"></div>
+    <div class="noaudio" id="noAudio" style="display:none;">✨ …</div>
+
+    <div class="codewrap" id="codewrap">
+      <div class="slots" id="slots"><div class="slot"></div><div class="slot"></div><div class="slot"></div><div class="slot"></div></div>
+      <div class="pad">
+        <button class="cbtn red"    data-c="red">RED</button>
+        <button class="cbtn yellow" data-c="yellow">YELLOW</button>
+        <button class="cbtn purple" data-c="purple">PURPLE</button>
+        <button class="cbtn blue"   data-c="blue">BLUE</button>
+      </div>
+      <div class="chint" id="chint"></div>
+    </div>
+
+    <div class="talkpanel" id="talkPanel">
+      <div class="talk-kid" id="talkKid"></div>
+      <div class="talk-think" id="talkThink"><b id="caineThinkEyes">◉ ‿ ◉</b> Caine is thinking<span class="tdots"><i>.</i><i>.</i><i>.</i></span></div>
+      <div class="talk-reply" id="talkReply"></div>
+    </div>
+  </div>
+</main>
+
+<div class="talkbar" id="talkbar">
+  <button class="micbtn en" id="micEn">🎤 Talk to Caine</button>
+  <button class="micbtn fr" id="micFr">🎤 Parler à Caine</button>
+</div>
+
+<nav>
+  <button class="back" id="backBtn">◀</button>
+  <button class="next" id="nextBtn">NEXT ▶</button>
+</nav>
+
+<audio id="audio" preload="auto"></audio>
+
+<script src="vendor/three.min.js?v=20260619l"></script>
+<script src="vendor/GLTFLoader.js?v=20260619l"></script>
+<script src="vendor/caine3d.js?v=20260619l"></script>
+
+<script>
+/* =====================  EDIT HERE  =====================================
+   WHO IS COMING: flip present:true/false. The reveal names + greets only present kids,
+   so Nina/Max's toggles adjust the whole show automatically. (Their audio is generated
+   either way, so toggling needs no re-run.)
+   ====================================================================== */
+const STAR = "Nora";
+const ROSTER = [
+  {name:"Nora", slug:"nora", char:"Pomni",    present:true,  bilingual:true},
+  {name:"Leo",  slug:"leo",  char:"Jax",      present:true,  bilingual:true},
+  {name:"Hugo",    slug:"hugo",    char:"Kinger",   present:true,  bilingual:false},
+  {name:"Chloé",    slug:"chloe",    char:"Ragatha",  present:true,  bilingual:false},
+  {name:"Sasha",   slug:"sasha",   char:"Zooble",   present:true,  bilingual:false},   // new player (9yo) — took Nina's Zooble role
+  {name:"Nina",   slug:"nina",   char:"Gangle",   present:false, bilingual:false},   // 90% absent → flip present:true if she comes
+  {name:"Max",   slug:"max",   char:"Gummigoo", present:false, bilingual:false}    // 90% absent (Nina's sister)
+];
+// Voice models. Audio lives in audio/<key>/.  OmniVoice is the chosen voice; the others
+// stay listed so you CAN still switch (the picker is hidden by default — see SHOW_VOICE_PICKER
+// below, or add ?voice=f5 to the URL).
+const MODELS = [
+  {key:"omnivoice",  name:"OmniVoice"},
+  {key:"f5",         name:"F5-TTS"},
+  {key:"chatterbox", name:"Chatterbox"},
+  {key:"xtts",       name:"XTTS v2"}
+];
+const SHOW_VOICE_PICKER = false;   // set true (or add ?voice=picker) to reveal the voice selector
+const PAUSE_MS = 550;   // little gap between the English clip and the French clip
+const _voiceParam = new URLSearchParams(location.search).get('voice');
+let currentModel = (_voiceParam && MODELS.some(m=>m.key===_voiceParam)) ? _voiceParam : MODELS[0].key;
+/* ====================================================================== */
+
+// Kids' screen only: step label + on-screen title. Host actions ("doing") live on the
+// GUIDE's adventure remote (engine ADV_STEPS) — never on Nora's console.
+const STEPS = [
+  { id:"s01", no:"Step 1 · headsets", title:"Welcome, players!" },
+  { id:"s02", no:"Step 2 · Caine arrives", title:"I am CAINE!" },
+  { id:"s03", no:"Step 3 · the reveal", title:"Open your eyes!", type:"reveal" },
+  { id:"s04", no:"Station 1 · Candy Canyon", title:"Candy Canyon Kingdom" },
+  { id:"s05", no:"Station 1 · win", title:"RED Gloink!", extra:["s05_carry"] },
+  { id:"s06", no:"Station 2 · Fast Food", title:"Caine's Impossible Burger" },
+  { id:"s07", no:"Station 2 · win", title:"YELLOW Gloink!", extra:["s07_carry"] },
+  { id:"s08", no:"Station 3 · Manor", title:"Mildenhall Manor" },
+  { id:"s09", no:"Station 3 · win", title:"PURPLE Gloink!", extra:["s09_carry"] },
+  { id:"s10", no:"Station 4 · Abstraction", title:"Don't Get Abstracted!" },
+  { id:"s11", no:"Station 4 · win", title:"BLUE Gloink — all four!", extra:["s11_carry"] },
+  { id:"s12", no:"Finale · the code", title:"Crack the Gloink Code", type:"code" },
+  { id:"s13", no:"Finale · escape", title:"EXIT OPEN — find the treasure!" },
+  { id:"s14", no:"Finale · treasure → cake", title:"Treasure found — CAKE TIME!" }
+];
+
+/* on-screen words = EXACTLY what Caine says (kept verbatim-synced with the engine's GENERAL
+   lines in make_caine_voice.py, so a child reads precisely what they hear). */
+const TEXT = {
+ s01:{en:`Headsets on, ${STAR} and all you players! No peeking! In three, two, one, you are entering the Amazing Digital Circus!`,
+      fr:`Casques sur les yeux, ${STAR} et tous les joueurs ! On ne triche pas ! Trois, deux, un, vous entrez dans le Cirque Numérique Fantastique !`},
+ s02:{en:`OH-HO-HOOO! New players! I am CAINE, your magnificent ringmaster! Today's adventure is GATHER THE GLOINKS! Find four magic Gloinks, open the Exit Door, and win the greatest treasure of all!`,
+      fr:`OH-HO-HOOO ! De nouveaux joueurs ! Je suis CAINE, votre magnifique présentateur ! L'aventure du jour, RASSEMBLEZ LES GLOINKS ! Trouvez quatre Gloinks magiques, ouvrez la Porte de Sortie, et gagnez le plus grand trésor de tous !`},
+ s04:{en:`Goggles down and held tight, players? Here comes the magic… 3… 2… 1… ZAP! Goggles UP and look — Welcome to the Candy Canyon Kingdom! That sneaky Candy Bandit has scattered his STOLEN candy all over the land, and he's guarding it! Grab every piece and rush it back to your base bucket before time runs out — but BEWARE: if the Bandit tags you, run all the way back to base before you try again! Team up and trick him, players… ready… GO!`,
+      fr:`Lunettes sur les yeux, bien accrochés, les joueurs ? Voici la magie… 3… 2… 1… ZAP ! Lunettes en haut, et regardez — Bienvenue au Royaume du Canyon de Bonbons ! Ce sournois Bandit des Bonbons a éparpillé ses bonbons VOLÉS dans tout le pays, et il les garde ! Attrapez chaque bonbon et rapportez-le vite dans le seau de votre base avant la fin du temps — mais ATTENTION : si le Bandit vous touche, retournez jusqu'à la base avant de réessayer ! Faites équipe et rusez, les joueurs… prêts… ALLEZ !`},
+ s05:{en:`You beat the bandit! Now listen, players — a little RED Gloink is hiding somewhere very close by! He's a shy, giggly fellow, he's not far… look high, look low, and FIND him! Find the RED Gloink and that's your first — one down, three to go!`,
+      fr:`Vous avez battu le bandit ! Écoutez, les joueurs — un petit Gloink ROUGE se cache tout près d'ici ! C'est un timide qui rigole, il n'est pas loin… cherchez en haut, cherchez en bas, et TROUVEZ-le ! Trouvez le Gloink ROUGE et ce sera le premier — un de pris, plus que trois !`},
+ s06:{en:`Goggles down, players? Here comes the magic again… 3… 2… 1… ZAP! Goggles UP and look — Welcome to my Fast Food! The manager wants one perfect burger, bottom bun, patty, cheese, lettuce, tomato, top bun. All hands, build it NOW!`,
+      fr:`Lunettes sur les yeux, les joueurs ? Encore de la magie… 3… 2… 1… ZAP ! Lunettes en haut, et regardez — Bienvenue à mon Fast Food ! La gérante veut un burger parfait, pain du bas, steak, fromage, salade, tomate, pain du haut. Tous ensemble, construisez-le MAINTENANT !`},
+ s07:{en:`A perfect burger! The manager is SO happy! Quick — a YELLOW Gloink is hiding nearby, the cheeky little fellow! Hunt high and low, look behind and under… find him! That makes TWO Gloinks!`,
+      fr:`Un burger parfait ! La gérante est trop contente ! Vite — un Gloink JAUNE se cache tout près, le petit coquin ! Cherchez en haut, en bas, derrière, dessous… trouvez-le ! Ça fait DEUX Gloinks !`},
+ s08:{en:`Goggles down, players? Here comes the magic… 3… 2… 1… ZAP! Goggles UP and look — Welcome to the spooky Mildenhall Manor, ooooh! Somewhere in this dark room I have hidden FIFTEEN glowing stars — find every last one before your ninety seconds run out! Ready? Hunt, hunt, HUNT!`,
+      fr:`Lunettes sur les yeux, les joueurs ? Voici la magie… 3… 2… 1… ZAP ! Lunettes en haut, et regardez — Bienvenue au manoir mystérieux de Mildenhall, ouuuh ! Quelque part dans cette pièce sombre, j'ai caché QUINZE étoiles brillantes — trouvez-les toutes avant la fin de vos quatre-vingt-dix secondes ! Prêts ? Cherchez, cherchez, CHERCHEZ !`},
+ s09:{en:`MAGNIFICENT — you found all fifteen glowing stars! Now, my clever players, here is a riddle to find the hidden PURPLE Gloink. Listen closely… We come as a pair and we cover your toes, we keep them all warm wherever feet go. We sleep folded up somewhere cosy and deep — find where WE live, and the Gloink you will keep! Solve it and search… three Gloinks now, just one more!`,
+      fr:`MAGNIFIQUE — vous avez trouvé les quinze étoiles brillantes ! Maintenant, mes petits malins, voici une énigme pour trouver le Gloink VIOLET caché. Écoutez bien… On va par deux pour couvrir tes orteils, et on les tient au chaud, quel beau travail ! On dort bien pliées tout au fond, à l'abri — trouvez où NOUS vivons, et le Gloink est ici ! Résolvez et cherchez… trois Gloinks, plus qu'un seul !`},
+ s10:{en:`Goggles down — last teleport, players! Here comes the magic… 3… 2… 1… ZAP! Goggles UP and… UH OH — BUBBLE is glitching! Run and dodge his glitchy hands — if Bubble TAGS you, you're abstracted, so FREEZE like a statue until a friend frees you with a high-five! Survive together… GO!`,
+      fr:`Lunettes sur les yeux — dernière téléportation, les joueurs ! Voici la magie… 3… 2… 1… ZAP ! Lunettes en haut et… OH NON — BUBBLE bugue ! Courez et esquivez ses mains qui buguent — si Bubble vous TOUCHE, vous êtes abstrait, alors figez-vous comme une statue jusqu'à ce qu'un ami vous libère avec un check ! Survivez ensemble… ALLEZ !`},
+ s11:{en:`Now, my wonderful HUMANS — the very LAST Gloink, the BLUE one, is hiding nearby! Everybody hunt… find him and we will have ALL FOUR! Then quick, my players, to the Exit Door!`,
+      fr:`Maintenant, mes merveilleux HUMAINS — le tout DERNIER Gloink, le BLEU, se cache tout près ! Tout le monde cherche… trouvez-le et nous aurons les QUATRE ! Puis vite, mes joueurs, à la Porte de Sortie !`},
+ s12:{en:`Goggles down… here comes the magic… 3… 2… 1… ZAP! Goggles UP — there it is, the mighty EXIT DOOR! All four Gloinks are here, but the door needs the secret Gloink CODE. Tap the four colours on my magic terminal… let me see… BLUE… PURPLE… YELLOW… RED… ahh, but in WHICH order?! Hmmm! Only YOU know, my clever players — think hard: in what order did you find your Gloinks? Take all the time you need… no rushing!`,
+      fr:`Lunettes sur les yeux… voici la magie… 3… 2… 1… ZAP ! Lunettes en haut — la voilà, la grande PORTE DE SORTIE ! Les quatre Gloinks sont là, mais la porte a besoin du CODE Gloink secret. Tapez les quatre couleurs sur mon terminal magique… voyons voir… BLEU… VIOLET… JAUNE… ROUGE… ahh, mais dans QUEL ordre ?! Hmmm ! Vous seuls le savez, mes petits malins — réfléchissez bien : dans quel ordre avez-vous trouvé vos Gloinks ? Prenez tout le temps qu'il faut… pas de précipitation !`},
+ s13:{en:`The code is COMPLETE! Push the Exit Door… and it swings WIDE OPEN! You did it, my magnificent heroes — you have ESCAPED the Amazing Digital Circus! And now, for your reward… somewhere very close, I have HIDDEN your treasure — a chest full of goodies! Hunt high, hunt low… find your treasure!`,
+      fr:`Le code est COMPLET ! Poussez la Porte de Sortie… et elle s'ouvre EN GRAND ! Vous avez réussi, mes magnifiques héros — vous vous êtes ÉCHAPPÉS du Cirque Numérique Fantastique ! Et maintenant, votre récompense… tout près d'ici, j'ai CACHÉ votre trésor — un coffre plein de surprises ! Cherchez partout… trouvez votre trésor !`},
+ s14:{en:`You FOUND it — the treasure is YOURS, a goodie bag for every single hero! MAGNIFICENT! You were the bravest, cleverest players the circus has ever seen. And now… do I smell something DELICIOUS? It is CAKE TIME! Everybody, follow Bubble to the birthday cake — and a great big HAPPY BIRTHDAY, ${STAR}!`,
+      fr:`Vous l'avez TROUVÉ — le trésor est à VOUS, un sac de surprises pour chaque héros ! MAGNIFIQUE ! Vous êtes les joueurs les plus courageux et les plus malins que le cirque ait jamais vus. Et maintenant… est-ce que je sens quelque chose de DÉLICIEUX ? C'est l'heure du GÂTEAU ! Tout le monde, suivez Bubble vers le gâteau d'anniversaire — et un grand JOYEUX ANNIVERSAIRE, ${STAR} !`}
+};
+
+/* ---------------- model selector ---------------- */
+const elModels=document.getElementById('models');
+function buildModelBar(){
+  MODELS.forEach(m=>{
+    const b=document.createElement('button'); b.className='mbtn'+(m.key===currentModel?' sel':'');
+    b.textContent=m.name; b.dataset.k=m.key;
+    b.addEventListener('click',()=>{ currentModel=m.key; [...elModels.querySelectorAll('.mbtn')].forEach(x=>x.classList.toggle('sel',x.dataset.k===currentModel)); render(); });
+    elModels.appendChild(b);
+  });
+}
+async function flagAvailableModels(){
+  let firstOk=null, curOk=false;
+  for(const m of MODELS){
+    const ok = await probe(`audio/${m.key}/s02_en.wav`) || await probe(`audio/${m.key}/s02_en.mp3`);
+    const btn=[...elModels.querySelectorAll('.mbtn')].find(x=>x.dataset.k===m.key);
+    if(!ok && btn) btn.classList.add('off');
+    if(ok){ if(!firstOk) firstOk=m.key; if(m.key===currentModel) curOk=true; }
+  }
+  if(!curOk && firstOk){ currentModel=firstOk; }   // chosen voice has no audio -> switch (caller renders after)
+  [...elModels.querySelectorAll('.mbtn')].forEach(x=>x.classList.toggle('sel',x.dataset.k===currentModel));
+}
+
+/* ---------------- engine ---------------- */
+let i=0, playlist=[], pidx=0;
+const audio=document.getElementById('audio');
+const elNo=document.getElementById('stepNo'), elTitle=document.getElementById('title'),
+      elLines=document.getElementById('lines'),
+      elNoAudio=document.getElementById('noAudio'), elEyes=document.getElementById('eyes'),
+      elCode=document.getElementById('codewrap'), elProg=document.getElementById('progress');
+
+STEPS.forEach(()=>{ const d=document.createElement('div'); d.className='pdot'; elProg.appendChild(d); });
+
+function presentKids(){ return ROSTER.filter(k=>k.present); }
+
+function tokensFor(step){
+  if(step.type==='reveal'){
+    return ['s03_intro', ...presentKids().map(k=>'s03_'+k.slug), 's03_outro'];
+  }
+  return [step.id, ...(step.extra||[])];
+}
+function probe(src){ return new Promise(res=>{ const a=new Audio();
+  a.preload='metadata';                                    // just the header -> resolves fast (canplaythrough downloaded the whole clip)
+  a.addEventListener('loadedmetadata',()=>res(true),{once:true});
+  a.addEventListener('error',()=>res(false),{once:true}); a.src=src; }); }
+
+async function resolveOne(base){
+  // try current model folder (mp3, wav), then legacy root
+  for(const p of [`audio/${currentModel}/${base}`, `audio/${base}`]){
+    for(const ext of ['mp3','wav']){ if(await probe(p+'.'+ext)) return p+'.'+ext; }
+  }
+  return null;
+}
+// FULL spoken text — mirrors the engine so the screen shows EXACTLY what Caine says.
+const CHAR_INTRO={
+  Pomni:{en:"the brave new jester who leads the way",fr:"le nouveau clown courageux qui ouvre la voie"},
+  Jax:{en:"the cheeky purple trickster",fr:"le petit malin violet, le farceur"},
+  Kinger:{en:"the wise, wonderfully wobbly chess king",fr:"le roi des échecs, sage et tout tremblant"},
+  Ragatha:{en:"the kindest ragdoll in the whole circus",fr:"la poupée de chiffon la plus gentille du cirque"},
+  Gangle:{en:"the gentle one with the happy little mask",fr:"la plus douce, avec son joli petit masque"},
+  Zooble:{en:"the coolest mix-and-match adventurer",fr:"l'aventurier le plus cool, fait de mille morceaux"},
+  Gummigoo:{en:"the brave cowboy of the Candy Canyon",fr:"le courageux cowboy du Canyon de Bonbons"}};
+const CARRIERS={
+  s05:{bilingual:false,en:"And the keeper of the RED Gloink is… CHLOÉ! When you find it, players, give it straight to Chloé — she will keep it safe!",fr:"Et la gardienne du Gloink ROUGE, c'est… CHLOÉ ! Quand vous le trouvez, les joueurs, donnez-le vite à Chloé — elle le gardera bien !"},
+  s07:{bilingual:false,en:"The keeper of the YELLOW Gloink is… HUGO! Find it and hand it to Hugo to carry, players!",fr:"Le gardien du Gloink JAUNE, c'est… HUGO ! Trouvez-le et donnez-le à Hugo, c'est lui qui le porte, les joueurs !"},
+  s09:{bilingual:true,en:"The keeper of the PURPLE Gloink is… LEO! Solve the riddle, find the Gloink, and give it to Leo — guard it well!",fr:"Le gardien du Gloink VIOLET, c'est… LEO ! Résolvez l'énigme, trouvez le Gloink, et donnez-le à Leo — protégez-le bien !"},
+  s11:{bilingual:true,en:"And the keeper of the very last one, the BLUE Gloink, is our birthday hero… NORA! Find it and give it to Nora to carry to the Exit Door!",fr:"Et le gardien du tout dernier, le Gloink BLEU, c'est notre héroïne du jour… NORA ! Trouvez-le et donnez-le à Nora, c'est elle qui le porte jusqu'à la Porte de Sortie !"}};
+const REVEAL_INTRO={en:"Now hold still, players, because my circus has turned each of you into a brand-new character!",fr:"Ne bougez plus, les joueurs, car mon cirque a transformé chacun de vous en un nouveau personnage !"};
+const REVEAL_OUTRO={en:"Players, on the count of three, open your eyes and meet yourselves! Three, two, one, EYES OPEN!",fr:"Joueurs, à trois, ouvrez les yeux et découvrez qui vous êtes ! Trois, deux, un, OUVREZ LES YEUX !"};
+function kidIntro(k,lang){ const ch=k.char,d=CHAR_INTRO[ch][lang]; return lang==='en'?`${k.name}! You are ${ch.toUpperCase()}, ${d}!`:`${k.name} ! Tu es ${ch.toUpperCase()}, ${d} !`; }
+
+// Each spoken sentence becomes a ROW: {lang, text (FULL words), src (audio url or null)}.
+async function buildRows(step){
+  const rows=[]; const reveal=step.type==='reveal';
+  function textFor(tok,lang){
+    if(reveal){
+      if(tok==='s03_intro') return REVEAL_INTRO[lang];
+      if(tok==='s03_outro') return REVEAL_OUTRO[lang];
+      const k=presentKids().find(k=>'s03_'+k.slug===tok); return k?kidIntro(k,lang):'';
+    }
+    if(TEXT[step.id] && tok===step.id) return TEXT[step.id][lang];
+    if(tok.endsWith('_carry')){ const c=CARRIERS[tok.slice(0,-6)]; return c?c[lang]:''; }
+    return '';
+  }
+  for(const tok of tokensFor(step)){
+    let langs=['en','fr'];
+    if(reveal){ const k=presentKids().find(k=>'s03_'+k.slug===tok); if(k && !k.bilingual) langs=['fr']; }
+    if(tok.endsWith('_carry')){ const c=CARRIERS[tok.slice(0,-6)]; if(c && !c.bilingual) langs=['fr']; }
+    for(const lang of langs){
+      const src=await resolveOne(`${tok}_${lang}`);
+      const text=textFor(tok,lang);
+      if(src || text) rows.push({lang, text, src});
+    }
+  }
+  return rows;
+}
+function lineHtml(r,n){
+  return `<div class="line ${r.lang}" data-n="${n}">`+
+    (r.src ? `<button class="lplay" data-n="${n}" aria-label="play / pause"></button>`
+           : `<span class="lplay ghost"></span>`)+
+    `<div class="body2"><div><span class="tag ${r.lang}">${r.lang.toUpperCase()}</span> <span class="ltext"></span></div>`+
+    `<span class="wave"><i></i><i></i><i></i><i></i><i></i></span></div></div>`;
+}
+
+let rows=[], seqMode=true, audioUnlocked=false, renderTok=0, curPlayTok=0, maxPlayed=-1;   // maxPlayed = furthest sentence revealed so far (no spoilers ahead)
+function setText(n,t){ const el=elLines.querySelector(`.line[data-n="${n}"] .ltext`); if(el) el.textContent=t; }
+function clearHi(){ [...elLines.querySelectorAll('.line')].forEach(el=>el.classList.remove('current','playing')); }
+// teleprompter "wheel": current sentence in focus & centred, PLAYED ones greyed above. Upcoming
+// sentences that have NEVER played are hidden (no spoiler) — they appear one-by-one as Caine says
+// them. Once played, they stay (so you can scroll up to replay). Only the current is shown ahead.
+function updateWheel(){
+  [...elLines.querySelectorAll('.line')].forEach(el=>{ const n=+el.dataset.n;
+    el.classList.remove('past','current','future','unseen');
+    if(n>maxPlayed && n!==pidx){ el.classList.add('unseen'); }      // never played + not current -> hidden
+    else el.classList.add(n<pidx?'past':(n===pidx?'current':'future'));
+    if(rows[n]) setText(n, rows[n].text);     // full text everywhere; typewriter overrides the current while it plays
+  });
+  const cur=elLines.querySelector('.line.current');
+  if(cur){ const cr=cur.getBoundingClientRect(), lr=elLines.getBoundingClientRect();
+    elLines.scrollTo({top: elLines.scrollTop + (cr.top-lr.top) - lr.height/2 + cr.height/2, behavior:'smooth'}); }
+}
+// Web Audio analyser → Caine's jaw mirrors the real loudness of the clip (closes on silences)
+let actx=null, analyser=null, timeData=null;
+function setupAnalyser(){
+  if(actx || !(window.AudioContext||window.webkitAudioContext)) return;
+  try{
+    actx=new (window.AudioContext||window.webkitAudioContext)();
+    const src=actx.createMediaElementSource(audio);
+    analyser=actx.createAnalyser(); analyser.fftSize=512; analyser.smoothingTimeConstant=0.55;
+    timeData=new Uint8Array(analyser.fftSize);
+    src.connect(analyser); analyser.connect(actx.destination);   // keep sound audible
+  }catch(e){ analyser=null; }
+}
+// the current sentence types out (over the clip length) + feed Caine's jaw the live loudness
+function typewriter(){
+  if(audio.src && !audio.paused && audio.duration && rows[pidx]){
+    const frac=Math.min(1, audio.currentTime/Math.max(0.15,audio.duration));
+    setText(pidx, rows[pidx].text.slice(0, Math.ceil(rows[pidx].text.length*frac)));
+  }
+  if(caine && caine.setMouthLevel && analyser){
+    analyser.getByteTimeDomainData(timeData);
+    let sum=0; for(let k=0;k<timeData.length;k++){ const x=(timeData[k]-128)/128; sum+=x*x; }
+    const rms=Math.sqrt(sum/timeData.length);
+    // open WIDE on speech so BOTH jaws clearly move (upper teeth/hat lift + lower jaw drop)
+    caine.setMouthLevel(audio.paused ? 0 : Math.min(1, Math.max(0,(rms-0.010)*7.5)));
+  }
+  requestAnimationFrame(typewriter);
+}
+requestAnimationFrame(typewriter);
+
+let autoplayTimer=0;
+async function render(){
+  const myTok=++renderTok; const s=STEPS[i];
+  clearTimeout(autoplayTimer);                                              // cancel a pending autoplay from the old step
+  audio.pause(); try{ audio.currentTime=0; }catch(e){} caineSpeak(false);   // INSTANT stop on step change
+  // show a "getting ready" spinner immediately so kids see it's loading (and don't mash Next)
+  elLines.innerHTML='<div class="loading-row"><span class="spin"></span><span>Caine is getting ready…</span></div>'; pidx=0; maxPlayed=-1;   // new step: nothing revealed yet
+  elNo.textContent=s.no; elTitle.textContent=s.title;
+  [...elProg.children].forEach((d,n)=>{ d.className='pdot'+(n<i?' done':'')+(n===i?' cur':''); });
+  elCode.style.display = s.type==='code' ? 'flex' : 'none';
+  if(s.type==='code') resetCode();
+
+  const r=await buildRows(s);
+  if(myTok!==renderTok) return;                  // a newer render superseded this one — bail
+  rows=r; pidx=0;
+  elLines.innerHTML=rows.map((r,n)=>lineHtml(r,n)).join('');
+  updateWheel(); elLines.scrollTop=0;            // first sentence in focus, top visible
+
+  const hasAudio=rows.some(r=>r.src);
+  elNoAudio.style.display = hasAudio ? 'none' : 'block';
+  if(!hasAudio){ maxPlayed=rows.length-1; updateWheel(); }   // nothing to play -> nothing to spoil, show the full text
+  if(hasAudio && audioUnlocked) autoplayTimer=setTimeout(()=>{ if(myTok===renderTok) playFrom(0); }, 300);
+}
+
+function playFrom(n){               // auto sequence from row n, skipping rows with no audio
+  while(n<rows.length && !rows[n].src) n++;
+  if(n>=rows.length) return;
+  seqMode=true; curPlayTok=renderTok; pidx=n; if(n>maxPlayed) maxPlayed=n;   // reveal up to here
+  audio.src=rows[n].src; audio.currentTime=0;
+  updateWheel(); setText(n,'');                   // clear current line so the typewriter types it out
+  audio.play().catch(()=>{});
+}
+function playSeq(){ playFrom(0); }  // used by the remote "↻ Replay"
+
+/* ---- 3D Caine: a self-hosted model that talks when audio plays (fallback: eyes) ---- */
+let caine=null;
+(function mountCaine(){
+  const stage=document.getElementById('caineStage'); if(!stage) return;
+  try{ caine = (window.Caine3D && Caine3D.mount(stage)) || null; }catch(e){ caine=null; }
+  if(!caine){ stage.innerHTML='<div class="caine-fallback" id="caineFb">◉ ‿ ◉</div>'; }   // no WebGL → animated eyes
+})();
+function caineSpeak(on){ if(caine) caine.speak(on);
+  const fb=document.getElementById('caineFb'); if(fb) fb.classList.toggle('talk',on);
+  elEyes.classList.toggle('talk',on); }
+
+function setPlayIcons(){
+  const playingN=(audio.src && !audio.paused && !audio.ended)?pidx:-1;
+  // the play/pause icon is CSS-drawn from the line's .playing state (no glyph to mis-centre)
+  [...elLines.querySelectorAll('.line')].forEach(el=>el.classList.toggle('playing', +el.dataset.n===playingN));
+}
+audio.addEventListener('playing',()=>{ caineSpeak(true); setPlayIcons(); });
+audio.addEventListener('pause',()=>{ caineSpeak(false); setPlayIcons(); });
+audio.addEventListener('ended',()=>{ caineSpeak(false); setPlayIcons();
+  if(rows[pidx]) setText(pidx, rows[pidx].text);     // finished line shows in full
+  // only chain to the next sentence if THIS clip belongs to the current step (not a stale clip from a step we left)
+  if(seqMode && curPlayTok===renderTok){ const g=renderTok; autoplayTimer=setTimeout(()=>{ if(g===renderTok && seqMode) playFrom(pidx+1); }, PAUSE_MS); } });
+  // ^ the scheduled chain re-checks seqMode: if the kid started Talk-to-Caine in the meantime (seqMode=false),
+  //   a pending timer must NOT replay a step line over Caine's reply.
+
+// per-line button = play / pause toggle. Tap a sentence to jump there (it then continues); tap again to pause / resume.
+function lineTap(n){
+  if(!rows[n] || !rows[n].src) return;
+  if(n===pidx && audio.src){
+    if(!audio.paused){ audio.pause(); return; }      // ⏸ interrupt
+    audio.play().catch(()=>{}); return;              // ▶ resume — sequence continues (FR after)
+  }
+  seqMode=true; curPlayTok=renderTok; pidx=n; if(n>maxPlayed) maxPlayed=n; audio.src=rows[n].src; audio.currentTime=0; updateWheel(); setText(n,''); audio.play().catch(()=>{});
+}
+elLines.addEventListener('click',e=>{ const b=e.target.closest('.lplay[data-n]'); if(b) lineTap(+b.dataset.n); });
+
+let navLock=0;
+function goLocal(n){
+  if(performance.now()<navLock) return;                 // ignore mashing/double-taps while a step is loading
+  n=Math.max(0,Math.min(STEPS.length-1,n)); if(n===i) return;
+  navLock=performance.now()+450; i=n; render(); advPost(i,false);
+}
+document.getElementById('nextBtn').addEventListener('click',()=>goLocal(i+1));
+document.getElementById('backBtn').addEventListener('click',()=>goLocal(i-1));
+
+/* ---------------- remote sync with the Party Server (Bubble's remote) ----------------
+   Works only when served by the server; opened as a plain file it just no-ops. Either
+   screen can drive: local NEXT/BACK posts the step; we follow the server when it changes. */
+let advTs=0, advPlay=0;
+function advPost(step,play){ fetch('/api/adv',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({step,play:play?1:0})}).then(r=>r.json()).then(d=>{ advTs=d.ts; advPlay=d.play; }).catch(()=>{}); }
+async function advPoll(){
+  try{ const d=await (await fetch('/api/adv')).json();
+    let stepChanged=false;
+    if(d.ts!==advTs){ advTs=d.ts; if(d.step!==i){ i=Math.max(0,Math.min(STEPS.length-1,d.step)); stepChanged=true; render(); } }
+    // Don't also replay in the SAME tick we switched steps: render() repopulates `rows` asynchronously,
+    // so playSeq() here would run against the OLD step's rows. A genuine replay arrives on the next poll.
+    if(!stepChanged && d.play!==advPlay){ advPlay=d.play; if(d.step===i) playSeq(); }
+  }catch(e){}
+  setTimeout(advPoll, 1000);
+}
+
+/* ---------------- code screen ---------------- */
+// The secret code = the ORDER the Gloinks were FOUND (Candy→Burger→Manor→Glitch). The kids must
+// DEDUCE that themselves — Caine never says it, and the buttons are shuffled so left-to-right ≠ answer.
+const CODE=['red','yellow','purple','blue'];
+const COLORS={red:'#ff4d57',yellow:'#ffd23f',purple:'#b06bff',blue:'#3ba7ff'};
+const CHINTS=[
+  'Not quite! In what ORDER did you find your Gloinks?',
+  'Think back — which colour did you win FIRST… then next… then next?',
+  'Big clue: it is the order you COLLECTED them — first Gloink first, last Gloink last!'
+];
+let entry=[], fails=0;
+const slots=()=>[...document.querySelectorAll('#slots .slot')];
+function shufflePad(){ const pad=document.querySelector('.pad'); const btns=[...pad.children];
+  for(let k=btns.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); [btns[k],btns[j]]=[btns[j],btns[k]]; }
+  btns.forEach(b=>pad.appendChild(b)); }                         // move nodes into the shuffled order
+function resetCode(){ entry=[]; fails=0; document.getElementById('chint').textContent=''; shufflePad(); paint(); }
+function paint(){ slots().forEach((s,n)=>{ if(entry[n]){s.classList.add('fill'); s.style.background=COLORS[entry[n]]; s.style.color=COLORS[entry[n]];} else {s.classList.remove('fill'); s.style.background='#160b2e'; s.style.color='transparent';} }); }
+document.querySelector('.pad').addEventListener('click',e=>{
+  const c=e.target.dataset.c; if(!c||entry.length>=4) return;
+  entry.push(c); paint();
+  if(entry.length===4){
+    if(entry.every((x,n)=>x===CODE[n])){ winCode(); return; }   // cracked it!
+    fails++;
+    document.body.classList.add('shake'); setTimeout(()=>document.body.classList.remove('shake'),380);
+    document.getElementById('chint').textContent = CHINTS[Math.min(fails-1, CHINTS.length-1)];
+    // NO auto-open: the code never opens itself. They must crack it (or Bubble taps NEXT on the remote).
+    setTimeout(()=>{entry=[]; paint();},700);
+  }
+});
+function winCode(){ confetti(); setTimeout(()=>{ goLocal(i+1); },700); }
+function confetti(){ const cols=Object.values(COLORS).concat(['#26e6ff','#ff3ba7']);
+  for(let k=0;k<90;k++){ const d=document.createElement('div'); d.className='conf';
+    d.style.left=Math.random()*100+'vw'; d.style.background=cols[k%cols.length]; document.body.appendChild(d);
+    const t=2000+Math.random()*1500, x=(Math.random()-.5)*200;
+    d.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${x}px,110vh) rotate(720deg)`,opacity:1}],{duration:t,easing:'ease-in'});
+    setTimeout(()=>d.remove(),t);} }
+
+/* ---------------- Talk to Caine (mic -> server -> Caine's voice) ---------------- */
+const micEn=document.getElementById('micEn'), micFr=document.getElementById('micFr');
+const talkPanel=document.getElementById('talkPanel'), talkKid=document.getElementById('talkKid'),
+      talkThink=document.getElementById('talkThink'), talkReply=document.getElementById('talkReply');
+let mediaRec=null, chunks=[], recLang=null, talkBusy=false, holding=false;   // holding = button is currently held down
+const canMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.isSecureContext);
+// Over plain HTTP the browser DISABLES the mic (getUserMedia needs a secure context). The Party Server
+// also serves an HTTPS console on (http port + 1); jumping there — same server, so the adventure/remote
+// still work — is the only way to enable Talk-to-Caine. Offer it as a one-tap banner + on mic-tap.
+const _insecure = (!window.isSecureContext && location.protocol==='http:' && !['localhost','127.0.0.1'].includes(location.hostname));
+const _httpsUrl = 'https://'+location.hostname+':'+((parseInt(location.port,10)||8765)+1)+'/console'+location.search;
+(function(){ const ban=document.getElementById('httpsBanner'); if(ban && _insecure){ ban.href=_httpsUrl; ban.classList.add('show'); } })();
+function micUI(state){
+  if(state==='recording'){
+    (recLang==='en'?micEn:micFr).classList.add('rec'); (recLang==='en'?micEn:micFr).textContent='● Release to send';
+    (recLang==='en'?micFr:micEn).disabled=true;
+  } else if(state==='thinking'){
+    micEn.disabled=micFr.disabled=true; talkThink.style.display='block'; talkReply.textContent='';
+  } else {
+    micEn.disabled=micFr.disabled=false; micEn.classList.remove('rec'); micFr.classList.remove('rec');
+    micEn.textContent='🎤 Hold to Talk'; micFr.textContent='🎤 Tiens pour parler'; talkThink.style.display='none';
+  }
+  if(state==='recording' || state==='thinking'){            // scroll the talk panel into view so the "thinking…" cue & reply are visible
+    try{ const m=document.getElementById('main'); m.scrollTo({top:m.scrollHeight, behavior:'smooth'}); }catch(_){}
+  }
+}
+// PUSH-TO-TALK (true walkie-talkie): record ONLY while the button is held. Because getUserMedia
+// is async, a quick tap can release BEFORE the recorder exists — we track `holding` so that, if
+// the button was already let go by the time the mic is ready, we don't start a stuck recording.
+async function startRec(lang){
+  if(!canMic){
+    if(_insecure){ location.href=_httpsUrl; return; }   // jump to the mic-enabled secure page (one-time cert warning)
+    talkPanel.style.display='block'; talkReply.textContent='🎤 Please allow the microphone for Caine (tap the mic and accept).'; return; }
+  if(talkBusy || (mediaRec && mediaRec.state==='recording')) return;
+  holding=true; recLang=lang;
+  let stream;
+  try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }
+  catch(e){ holding=false; talkPanel.style.display='block'; talkReply.textContent='🎤 Please allow the microphone for Caine.'; return; }
+  if(!holding){ stream.getTracks().forEach(t=>t.stop()); return; }   // released before the mic was ready -> just a tap, ignore
+  chunks=[]; mediaRec=new MediaRecorder(stream);
+  mediaRec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+  mediaRec.onstop=()=>{ stream.getTracks().forEach(t=>t.stop()); sendTalk(new Blob(chunks), recLang); };
+  // If the button was let go during the (async) start transition, stop as soon as recording truly begins.
+  mediaRec.onstart=()=>{ if(!holding){ try{ mediaRec.stop(); }catch(_){} } };
+  mediaRec.start(); talkPanel.style.display='block'; talkKid.textContent=''; talkReply.textContent=''; micUI('recording');
+  if(!holding){ try{ mediaRec.stop(); }catch(_){} }                 // also try now (browsers already 'recording')
+  else { try{audio.pause();}catch(_){} clearTimeout(autoplayTimer); seqMode=false; }   // talking takes over: silence the step + stop auto-advance so Caine's REPLY plays, not the step
+}
+function stopRec(){ holding=false; if(mediaRec && mediaRec.state==='recording') mediaRec.stop(); }
+async function sendTalk(blob, lang){
+  talkBusy=true; micUI('thinking');
+  const ac=new AbortController(); const to=setTimeout(()=>ac.abort(), 30000);   // never leave kids stuck "thinking"
+  try{
+    const r=await fetch(`/api/talk?lang=${lang}&step=${i}`, {method:'POST', body:blob, signal:ac.signal});
+    const d=await r.json();
+    if(d.kid) talkKid.textContent='🧒 “'+d.kid+'”';
+    if(d.ok){ talkReply.textContent=d.text||'';
+      if(d.audio){ seqMode=false; pidx=-1; clearTimeout(autoplayTimer); clearHi(); audio.src=d.audio; audio.currentTime=0;
+        // The reply is a one-off, NOT a step row, so don't chain off its end (seqMode=false). When it
+        // finishes, restore the step's sequence state so narration auto-advance works again afterwards.
+        audio.addEventListener('ended', ()=>{ seqMode=true; pidx=Math.max(0,maxPlayed); curPlayTok=renderTok; updateWheel(); }, {once:true});
+        audio.play().catch(()=>{}); } }
+    else talkReply.textContent='⚠ '+(d.error||'Caine got distracted! Try again.');
+  }catch(e){ talkReply.textContent = (e&&e.name==='AbortError') ? '⚠ Caine took too long — try again!' : '⚠ Could not reach Caine.'; }
+  finally{ clearTimeout(to); talkBusy=false; micUI('idle'); }
+}
+// Hold a mic button to record; release to send. Pointer CAPTURE so a wandering 7-year-old
+// finger drifting off the button doesn't fire pointerleave and cut the recording short.
+['en','fr'].forEach(lang=>{
+  const b=(lang==='en')?micEn:micFr;
+  let pid=null;
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); pid=e.pointerId; try{ b.setPointerCapture(pid); }catch(_){}; startRec(lang); });
+  const end=e=>{ if(pid!==null && e.pointerId!==pid) return; pid=null; if(e.preventDefault) e.preventDefault(); stopRec(); };
+  b.addEventListener('pointerup',end);
+  b.addEventListener('pointercancel',end);
+  b.addEventListener('contextmenu',e=>e.preventDefault());   // no long-press menu on iOS
+});
+micEn.textContent='🎤 Hold to Talk'; micFr.textContent='🎤 Tiens pour parler';
+if(!canMic){ micEn.title=micFr.title='Microphone needs the https address'; }
+
+/* ---------------- audio unlock (iOS needs one tap before sound) ---------------- */
+function unlockAudio(){           // NOT async: everything must stay in the SAME user-gesture tick (WebKit)
+  if(audioUnlocked) return;
+  audioUnlocked=true;
+  const myTok=renderTok;          // if the user navigates before the (deferred) unlock-play fires, DON'T replay the old step
+  const st=document.getElementById('startup'); if(st) st.style.display='none';
+  setupAnalyser();
+  // 1) SYNCHRONOUSLY unlock the <audio> element with a muted play() inside the gesture — this MUST come
+  //    before any await, or iOS Safari drops the user-activation and the first real clip won't play.
+  const go=()=>{ try{audio.pause();}catch(_){} audio.muted=false; if(audioUnlocked && myTok===renderTok) playFrom(0); };
+  try{ audio.muted=true; const p=audio.play(); if(p&&p.then) p.then(go).catch(go); else go(); }
+  catch(e){ go(); }
+  // 2) resume the Web Audio context FIRE-AND-FORGET (no await — awaiting here would break the gesture).
+  try{ if(actx && actx.state!=='running') actx.resume(); }catch(_){}
+}
+document.getElementById('startup').addEventListener('click',unlockAudio);
+
+/* ---- iPad viewport fix: pin the body to the ACTUAL visible height so the bottom NEXT/◀ nav can never
+   hide behind Safari's toolbar (belt-and-suspenders on top of 100dvh; works on every iOS version). ---- */
+function fitVh(){ try{ document.body.style.height = window.innerHeight + 'px'; }catch(_){} }
+fitVh();
+window.addEventListener('resize', fitVh);
+window.addEventListener('orientationchange', ()=>{ fitVh(); setTimeout(fitVh,300); });   // iOS toolbar settles after a beat
+window.addEventListener('load', fitVh);
+
+/* ---------------- boot ---------------- */
+buildModelBar();
+if(!(SHOW_VOICE_PICKER || _voiceParam==='picker')) elModels.style.display='none';   // hidden: OmniVoice only
+flagAvailableModels().then(render);   // settle which voice has audio FIRST, then build the first step ONCE
+advPoll();   // follow Bubble's remote when served by the Party Server (no-op offline)
+</script>
+</body>
+</html>

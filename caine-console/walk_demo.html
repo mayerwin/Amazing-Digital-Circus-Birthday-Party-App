@@ -1,0 +1,101 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caine — rig test (walk + talk)</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  html,body{margin:0;height:100%;background:radial-gradient(900px 600px at 50% 20%,#2a0f5e,#0c0820 70%);
+    color:#eafff9;font-family:"Outfit",system-ui,sans-serif;overflow:hidden;}
+  #stage{position:fixed;inset:0;}
+  .hud{position:fixed;top:14px;left:0;right:0;text-align:center;z-index:5;pointer-events:none;}
+  .hud h1{font-family:"Bungee",system-ui;font-size:20px;margin:0;letter-spacing:1px;
+    background:linear-gradient(90deg,#26e6ff,#ff3ba7,#ffd23f);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hud p{margin:4px 0 0;font-size:13px;color:#b9a6e8;}
+  .bar{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;
+    justify-content:center;flex-wrap:wrap;z-index:5;}
+  .bar button{font-family:"Bungee",system-ui;font-size:13px;border:none;border-radius:14px;padding:13px 20px;cursor:pointer;
+    color:#04212e;background:linear-gradient(90deg,#26e6ff,#3ba7ff);box-shadow:0 5px 14px rgba(38,230,255,.3);}
+  .bar button.sel{background:linear-gradient(90deg,#ff3ba7,#b06bff);color:#fff;}
+  .bar button.alt{background:#241144;color:#b9a6e8;}
+  #err{position:fixed;bottom:80px;left:0;right:0;text-align:center;color:#ff7cc0;font-size:13px;z-index:6;}
+</style></head>
+<body>
+<div class="hud"><h1>C.A.I.N.E. — RIG TEST</h1><p id="cap">walking &amp; talking — proving the skeleton</p></div>
+<div id="stage"></div>
+<div id="err"></div>
+<div class="bar">
+  <button id="bWalk" class="sel">🚶 Walk</button>
+  <button id="bIdle" class="alt">🧍 Idle</button>
+  <button id="bTalk" class="sel">💬 Talk: ON</button>
+</div>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/GLTFLoader.js"></script>
+<script>
+const FILE = new URLSearchParams(location.search).get('file') || 'caine.glb?v=20260619l';
+const stage=document.getElementById('stage');
+const W=()=>window.innerWidth, H=()=>window.innerHeight;
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(32,W()/H(),0.01,100);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2)); renderer.setSize(W(),H());
+renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.08;
+stage.appendChild(renderer.domElement);
+try{ const pm=new THREE.PMREMGenerator(renderer); const es=new THREE.Scene();
+  es.add(new THREE.Mesh(new THREE.SphereGeometry(60,16,8),new THREE.MeshBasicMaterial({color:0x241844,side:THREE.BackSide})));
+  [[0x6af2ff,-10,7,9],[0xff7cc0,11,2,-5],[0xfff2d0,0,14,7],[0x9b6bff,-6,-8,6]].forEach(p=>{const s=new THREE.Mesh(new THREE.SphereGeometry(5,12,8),new THREE.MeshBasicMaterial({color:p[0]}));s.position.set(p[1],p[2],p[3]);es.add(s);});
+  scene.environment=pm.fromScene(es,0.5).texture; pm.dispose();
+}catch(e){}
+scene.add(new THREE.AmbientLight(0xb9c6d6,0.45));
+let k=new THREE.DirectionalLight(0xbfefff,0.95);k.position.set(-3,4,6);scene.add(k);
+let rim=new THREE.DirectionalLight(0xff7cc0,0.7);rim.position.set(4,1.2,-2);scene.add(rim);
+let fill=new THREE.DirectionalLight(0xfff0cc,0.4);fill.position.set(0,3,7);scene.add(fill);
+
+let mixer=null, actions={}, mouths=[], current=null, clock=new THREE.Clock(), talk=true, root=new THREE.Group();
+scene.add(root);
+function frameModel(model){
+  model.updateMatrixWorld(true);
+  const box=new THREE.Box3();
+  model.traverse(o=>{if(o.isMesh&&o.geometry){o.geometry.computeBoundingBox();box.union(o.geometry.boundingBox.clone().applyMatrix4(o.matrixWorld));}});
+  const s=box.getSize(new THREE.Vector3()),c=box.getCenter(new THREE.Vector3());
+  model.position.set(-c.x,-c.y,-c.z);
+  const fov=camera.fov*Math.PI/180, asp=W()/H();
+  camera.position.set(0,0,Math.max((s.y/2)/Math.tan(fov/2),(s.x/2)/(Math.tan(fov/2)*asp))*1.45);
+  camera.lookAt(0,0,0); window.__bbox=[+s.x.toFixed(2),+s.y.toFixed(2),+s.z.toFixed(2)];
+}
+new THREE.GLTFLoader().load(FILE,g=>{
+  root.add(g.scene);
+  g.scene.traverse(o=>{
+    if(o.morphTargetDictionary&&'mouthOpen'in o.morphTargetDictionary) mouths.push({m:o,i:o.morphTargetDictionary['mouthOpen']});
+    if(o.isMesh&&o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if('envMapIntensity'in m)m.envMapIntensity=1.6;if('roughness'in m&&m.roughness!=null)m.roughness=Math.max(0.16,m.roughness*0.55);if('metalness'in m&&m.metalness!=null)m.metalness=Math.min(0.8,Math.max(m.metalness,0.16));m.needsUpdate=true;});}
+  });
+  mixer=new THREE.AnimationMixer(g.scene);
+  g.animations.forEach(a=>actions[a.name]=mixer.clipAction(a));
+  window.__anims=g.animations.map(a=>a.name);
+  frameModel(g.scene); play('Walk'); window.__ready=true;
+}, undefined, e=>{ document.getElementById('err').textContent='Could not load '+FILE; window.__ready=true; });
+function play(name){
+  if(!actions[name]) return;
+  if(current&&actions[current]) actions[current].fadeOut(0.25);
+  actions[name].reset().fadeIn(0.25).play(); current=name;
+  document.getElementById('bWalk').classList.toggle('sel',name==='Walk');
+  document.getElementById('bWalk').classList.toggle('alt',name!=='Walk');
+  document.getElementById('bIdle').classList.toggle('sel',name==='Idle');
+  document.getElementById('bIdle').classList.toggle('alt',name!=='Idle');
+}
+document.getElementById('bWalk').onclick=()=>play('Walk');
+document.getElementById('bIdle').onclick=()=>play('Idle');
+document.getElementById('bTalk').onclick=function(){ talk=!talk; this.textContent='💬 Talk: '+(talk?'ON':'OFF'); this.classList.toggle('sel',talk); this.classList.toggle('alt',!talk); };
+let sp=0,cur=0;
+function loop(){
+  const dt=clock.getDelta(); if(mixer) mixer.update(dt);
+  // talking: a speech-like mouth rhythm driving BOTH jaws via the morph
+  let target=0;
+  if(talk){ sp+=dt*9; const env=0.5+0.5*Math.sin(sp*0.9), fl=0.5+0.5*Math.sin(sp*2.3+1.7); target=0.12+env*fl*0.85; }
+  cur+=(target-cur)*0.4;
+  for(const o of mouths) o.m.morphTargetInfluences[o.i]=cur;
+  window.__t=(window.__t||0)+1;
+  renderer.render(scene,camera); requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+addEventListener('resize',()=>{camera.aspect=W()/H();camera.updateProjectionMatrix();renderer.setSize(W(),H());if(root.children[0])frameModel(root.children[0]);});
+window.__setAnim=play;
+</script></body></html>

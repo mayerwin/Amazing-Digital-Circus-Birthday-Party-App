@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Digital Circus — Print Pack</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+  :root{
+    --red:#ff4d57; --yellow:#f4b400; --purple:#9b51e0; --blue:#2d9cdb;
+    --magenta:#e0218a; --cyan:#0bb3d6; --ink:#1a0e30;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:"Outfit","Segoe UI",system-ui,Arial,sans-serif; color:var(--ink);}
+  h2,.badge .role{font-family:"Bungee","Segoe UI",system-ui,Arial,sans-serif;}
+  .screen-only{background:#241144; color:#f4ecff; padding:18px 22px; font-size:14px; font-family:"Outfit",system-ui;}
+  .screen-only b{color:#ffd23f;}
+  .screen-only a{color:#26e6ff;}
+  @media print{ .screen-only{display:none;} .page{page-break-after:always;} @page{margin:10mm;} }
+  .page{padding:14mm 12mm; min-height:265mm;}
+  h2{font-size:22px; margin:0 0 4px; letter-spacing:1px;}
+  .hd{color:#7a3; }
+  .note{color:#666; font-size:12px; margin:0 0 14px;}
+
+  /* badges */
+  .badges{display:grid; grid-template-columns:1fr 1fr; gap:8mm;}
+  .badge{border:3px solid var(--ink); border-radius:16px; padding:14px; text-align:center;
+         height:78mm; display:flex; flex-direction:column; justify-content:center; position:relative;
+         background:
+           repeating-linear-gradient(90deg,#fff 0 14px,#fff7fb 14px 28px);}
+  .badge .eyes{font-size:34px; letter-spacing:6px;}
+  .badge .role{font-size:30px; font-weight:900; margin:6px 0 2px; letter-spacing:1px;}
+  .badge .desc{font-size:13px; color:#444; padding:0 8px;}
+  .badge .tag{position:absolute; top:8px; left:0; right:0; font-size:11px; letter-spacing:3px;
+              color:#aa2; font-weight:800;}
+  .badge .name{margin-top:10px; font-size:12px; color:#888;}
+  .badge .name b{display:inline-block; border-bottom:1px dashed #999; min-width:120px;}
+  .pomni{border-color:var(--magenta);} .pomni .role{color:var(--magenta);}
+  .jax{border-color:var(--purple);} .jax .role{color:var(--purple);}
+  .ragatha{border-color:var(--red);} .ragatha .role{color:var(--red);}
+  .gangle{border-color:var(--cyan);} .gangle .role{color:var(--cyan);}
+  .kinger{border-color:#b8860b;} .kinger .role{color:#b8860b;}
+  .zooble{border-color:#2a9d5c;} .zooble .role{color:#2a9d5c;}
+  .gummigoo{border-color:#c8843c;} .gummigoo .role{color:#c8843c;}
+  .bubble{border-color:var(--blue);} .bubble .role{color:var(--blue);}
+  .blank{border-color:#999; border-style:dashed;} .blank .role{color:#999;}
+
+  /* station signs */
+  .sign{border:6px solid var(--ink); border-radius:22px; padding:20mm 12mm; text-align:center;
+        height:235mm; display:flex; flex-direction:column; justify-content:center;}
+  .sign .eyes{font-size:60px; letter-spacing:12px;}
+  .sign .num{font-size:30px; font-weight:900; letter-spacing:4px; margin-top:10px;}
+  .sign .title{font-size:54px; font-weight:900; line-height:1.05; margin:10px 0;}
+  .sign .ref{font-size:18px; color:#666; font-style:italic;}
+  .sign .reward{margin-top:26px; font-size:24px; font-weight:800;}
+  .swatch{display:inline-block; width:34px; height:34px; border-radius:50%; vertical-align:-7px;
+          border:3px solid rgba(0,0,0,.15);}
+  .s-red{background:var(--red);} .s-yellow{background:var(--yellow);}
+  .s-purple{background:var(--purple);} .s-blue{background:var(--blue);}
+  .sign.b-red{border-color:var(--red);} .sign.b-yellow{border-color:var(--yellow);}
+  .sign.b-purple{border-color:var(--purple);} .sign.b-blue{border-color:var(--blue);}
+
+  /* exit door */
+  .exit{border:8px solid var(--ink); border-radius:24px; padding:18mm 12mm; text-align:center;
+        height:240mm; display:flex; flex-direction:column; justify-content:center;
+        background:repeating-linear-gradient(45deg,#fff 0 24px,#faf3ff 24px 48px);}
+  .exit .ex{font-size:64px; font-weight:900; letter-spacing:6px; color:var(--magenta);}
+  .exit .big{font-size:34px; font-weight:900; margin:8px 0;}
+  .exit .code{margin:22px 0;}
+  .exit .code .swatch{width:54px; height:54px; margin:0 8px;}
+  .exit .arrow{font-size:30px; color:#888; vertical-align:18px;}
+  .exit .hint{font-size:18px; color:#555; margin-top:10px;}
+
+  /* burger pieces */
+  .burger{display:flex; flex-direction:column; gap:6mm; align-items:center;}
+  .piece{width:150mm; text-align:center; font-size:22px; font-weight:800; padding:14px;
+         border:3px solid #5a3a1a; color:#5a3a1a;}
+  .bun-top{background:#e8a85a; border-radius:80px 80px 14px 14px;}
+  .lettuce{background:#9ccc5a; border-radius:40px;}
+  .tomato{background:#e9645a; border-radius:30px;}
+  .cheese{background:#ffd23f; border-radius:8px; transform:rotate(-1deg);}
+  .patty{background:#7a4a28; color:#fff; border-radius:30px;}
+  .bun-bottom{background:#e0a050; border-radius:14px 14px 40px 40px;}
+
+</style>
+</head>
+<body>
+
+<div class="screen-only">
+  <b>How to print:</b> Print this on A4, colour, 100% scale. Each section starts on a new page.
+  Pages: (1–2) character badges, (3–6) the four station signs, (7) the Exit Door sign, (8) burger pieces.
+  Cut the badges out and stick them on the kids during the reveal. Tape the signs at each station.
+  The Exit Door card shows the colour code the kids tap on the iPad. ◉‿◉
+</div>
+
+<!-- PAGE 1: badges -->
+<div class="page">
+  <h2 class="hd">🎟️ Character Badges (1/2)</h2>
+  <p class="note">Cut out · pin or string onto each kid.</p>
+  <div class="badges">
+    <div class="badge pomni"><div class="tag">PLAYER</div><div class="eyes">◆‿◆</div><div class="role">POMNI</div><div class="desc">The brave new jester. That's the hero — perfect for the birthday star!</div><div class="name">I am: <b></b></div></div>
+    <div class="badge jax"><div class="tag">PLAYER</div><div class="eyes">▼ ▼</div><div class="role">JAX</div><div class="desc">The cheeky purple trickster. Loves a prank.</div><div class="name">I am: <b></b></div></div>
+    <div class="badge ragatha"><div class="tag">PLAYER</div><div class="eyes">◉‿◉</div><div class="role">RAGATHA</div><div class="desc">The kind ragdoll. Always helps the team.</div><div class="name">I am: <b></b></div></div>
+    <div class="badge gangle"><div class="tag">PLAYER</div><div class="eyes">◠ ◡</div><div class="role">GANGLE</div><div class="desc">The gentle one with the theatre mask.</div><div class="name">I am: <b></b></div></div>
+  </div>
+</div>
+
+<!-- PAGE 2: badges -->
+<div class="page">
+  <h2 class="hd">🎟️ Character Badges (2/2)</h2>
+  <p class="note">Cut out · pin or string onto each kid.</p>
+  <div class="badges">
+    <div class="badge kinger"><div class="tag">PLAYER</div><div class="eyes">♔ ♔</div><div class="role">KINGER</div><div class="desc">The wise, wobbly chess king. A bit forgetful, very brave.</div><div class="name">I am: <b></b></div></div>
+    <div class="badge zooble"><div class="tag">PLAYER</div><div class="eyes">✦ ✦</div><div class="role">ZOOBLE</div><div class="desc">Made of cool mix-and-match parts. Too cool to care.</div><div class="name">I am: <b></b></div></div>
+    <div class="badge bubble"><div class="tag">HELPER</div><div class="eyes">◉ ◡ ◉</div><div class="role">BUBBLE</div><div class="desc">Caine's bouncy little helper. A fun badge for a younger guest.</div><div class="name">I am: <b></b></div></div>
+    <div class="badge gummigoo"><div class="tag">PLAYER</div><div class="eyes">⌐ ⌐</div><div class="role">GUMMIGOO</div><div class="desc">The brave cowboy of the Candy Canyon.</div><div class="name">I am: <b></b></div></div>
+  </div>
+</div>
+
+<!-- PAGE 3: station 1 -->
+<div class="page">
+  <div class="sign b-red">
+    <div class="eyes">◉ ‿ ◉</div>
+    <div class="num">STATION 1</div>
+    <div class="title">Candy Canyon<br>Kingdom</div>
+    <div class="ref">"Catch the Candy Bandit's scattered candy — race it to your base!"</div>
+    <div class="reward">Reward: <span class="swatch s-red"></span> RED GLOINK</div>
+  </div>
+</div>
+
+<!-- PAGE 4: station 2 -->
+<div class="page">
+  <div class="sign b-yellow">
+    <div class="eyes">◠ ◡ ◠</div>
+    <div class="num">STATION 2</div>
+    <div class="title">Caine's<br>Impossible Burger</div>
+    <div class="ref">"Craft the perfect burger, relay-style!"</div>
+    <div class="reward">Reward: <span class="swatch s-yellow"></span> YELLOW GLOINK</div>
+  </div>
+</div>
+
+<!-- PAGE 5: station 3 -->
+<div class="page">
+  <div class="sign b-purple">
+    <div class="eyes">◑ ◡ ◐</div>
+    <div class="num">STATION 3</div>
+    <div class="title">Mildenhall<br>Manor</div>
+    <div class="ref">"Find the 15 glowing stars in the dark… then solve the riddle!"</div>
+    <div class="reward">Reward: <span class="swatch s-purple"></span> PURPLE GLOINK</div>
+  </div>
+</div>
+
+<!-- PAGE 6: station 4 -->
+<div class="page">
+  <div class="sign b-blue">
+    <div class="eyes">✖ ‿ ✖</div>
+    <div class="num">STATION 4</div>
+    <div class="title">Don't Get<br>Abstracted!</div>
+    <div class="ref">"Dodge the glitch — freeze if you're hit!"</div>
+    <div class="reward">Reward: <span class="swatch s-blue"></span> BLUE GLOINK</div>
+  </div>
+</div>
+
+<!-- PAGE 7: exit door -->
+<div class="page">
+  <div class="exit">
+    <div class="ex">▣ EXIT ▣</div>
+    <div class="big">Crack the Gloink Code</div>
+    <div class="code">
+      <span class="swatch s-purple"></span>
+      <span class="swatch s-red"></span>
+      <span class="swatch s-blue"></span>
+      <span class="swatch s-yellow"></span>
+    </div>
+    <div class="big" style="font-size:30px;">…but in which ORDER? 🤔</div>
+    <div class="hint">Tap the four colours on the C.A.I.N.E. Terminal in the <b>ORDER you FOUND your Gloinks</b> — first one first, last one last!</div>
+    <div style="margin-top:26px; border-top:3px dashed #ccc; padding-top:16px; font-size:15px; color:#888;">
+      No peeking — only the real heroes remember the order they found their Gloinks!
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 8: burger pieces -->
+<div class="page">
+  <h2 class="hd">🍔 Burger Pieces — Station 2</h2>
+  <p class="note">Print this page TWICE for the two-team craft-off. Cut out each piece. Stack order (bottom → top): bottom bun, patty, cheese, lettuce, tomato, top bun.</p>
+  <div class="burger">
+    <div class="piece bun-top">🍞 TOP BUN</div>
+    <div class="piece tomato">🍅 TOMATO</div>
+    <div class="piece lettuce">🥬 LETTUCE</div>
+    <div class="piece cheese">🧀 CHEESE</div>
+    <div class="piece patty">🍖 PATTY</div>
+    <div class="piece bun-bottom">🍞 BOTTOM BUN</div>
+  </div>
+</div>
+
+</body>
+</html>

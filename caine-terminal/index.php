@@ -1,0 +1,218 @@
+<?php
+/*
+  C.A.I.N.E. TERMINAL — Exit Code unlock for Nora's Amazing Digital Circus party.
+  Tiny single-file PHP page for the iPad. No database, no dependencies.
+  Kids tap the 4 Gloink colours in order (RED, YELLOW, PURPLE, BLUE) to "unlock the exit".
+  You can change the code by editing the line below.
+*/
+$EXIT_CODE = ['red','yellow','purple','blue']; // <-- change order here if you want
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>C.A.I.N.E. TERMINAL</title>
+<style>
+  :root{
+    --red:#ff4d57; --yellow:#ffd23f; --purple:#b06bff; --blue:#3ba7ff;
+    --bg:#0c0820; --ink:#eafff9; --cyan:#26e6ff; --magenta:#ff3ba7;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none;}
+  html,body{height:100%; margin:0;}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 50% -10%, #2a0f5e 0%, transparent 60%),
+      var(--bg);
+    color:var(--ink); overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    text-align:center; padding:24px 18px; min-height:100%;
+  }
+  .scan:before{content:""; position:fixed; inset:0; pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 2px,transparent 2px 4px);}
+  .eyes{font-size:40px; letter-spacing:8px; color:var(--cyan); filter:drop-shadow(0 0 12px var(--cyan));}
+  h1{font-size:22px; letter-spacing:3px; margin:8px 0 2px;
+     background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));
+     -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .sub{color:#b9a6e8; font-size:13px; margin-bottom:14px;}
+  .prompt{font-size:16px; margin:6px 0 14px; min-height:24px; color:var(--cyan); font-weight:700;}
+
+  .slots{display:flex; gap:10px; justify-content:center; margin-bottom:22px;}
+  .slot{width:46px; height:46px; border-radius:12px; border:2px dashed #4a2a86; background:#160b2e;}
+  .slot.fill{border-style:solid; box-shadow:0 0 14px currentColor;}
+
+  .pad{display:grid; grid-template-columns:1fr 1fr; gap:18px; width:100%; max-width:420px;}
+  .btn{height:120px; border:none; border-radius:22px; font-size:19px; font-weight:900;
+       color:#0c0820; letter-spacing:1px; cursor:pointer; position:relative;
+       box-shadow:0 8px 0 rgba(0,0,0,.35), inset 0 0 30px rgba(255,255,255,.25);
+       transition:transform .06s;}
+  .btn:active{transform:translateY(4px); box-shadow:0 4px 0 rgba(0,0,0,.35);}
+  .btn.red{background:var(--red);} .btn.yellow{background:var(--yellow);}
+  .btn.purple{background:var(--purple);} .btn.blue{background:var(--blue);}
+
+  .row{margin-top:20px; display:flex; gap:12px; justify-content:center;}
+  .mini{background:#241144; color:var(--cyan); border:1px solid #4a2a86;
+        padding:10px 16px; border-radius:12px; font-size:14px; font-weight:700; cursor:pointer;}
+  .hint{margin-top:14px; color:#b9a6e8; font-size:13px; min-height:18px;}
+
+  /* overlay */
+  #ov{position:fixed; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center;
+      background:rgba(8,4,20,.94); z-index:10; padding:24px; text-align:center;}
+  #ov.show{display:flex;}
+  #ov .big{font-size:30px; font-weight:900; letter-spacing:2px; line-height:1.2;
+     background:linear-gradient(90deg,var(--cyan),var(--magenta),var(--yellow));
+     -webkit-background-clip:text; background-clip:text; color:transparent;}
+  #ov .sync{font-size:18px; color:var(--cyan); letter-spacing:4px; margin-bottom:10px;}
+  #ov .emoji{font-size:64px; margin:14px 0; animation:pop .5s ease;}
+  #ov .door{font-size:16px; color:#eafff9; max-width:340px;}
+  @keyframes pop{0%{transform:scale(.2);opacity:0;}70%{transform:scale(1.2);}100%{transform:scale(1);}}
+  #ov .again{margin-top:22px; background:var(--magenta); color:#fff; border:none;
+     padding:13px 22px; border-radius:14px; font-size:15px; font-weight:800; cursor:pointer;}
+
+  /* glitch shake */
+  .shake{animation:shk .35s linear;}
+  @keyframes shk{0%,100%{transform:none;}25%{transform:translateX(-7px);}75%{transform:translateX(7px);}}
+
+  .conf{position:fixed; top:-12px; width:10px; height:16px; z-index:11; will-change:transform;}
+</style>
+</head>
+<body class="scan">
+
+  <div class="eyes">◉ ‿ ◉</div>
+  <h1>C.A.I.N.E. TERMINAL</h1>
+  <div class="sub">Exit Door · Gloink Code Required</div>
+
+  <div class="prompt" id="prompt">Tap the Gloink colours in order!</div>
+
+  <div class="slots" id="slots">
+    <div class="slot" data-i="0"></div>
+    <div class="slot" data-i="1"></div>
+    <div class="slot" data-i="2"></div>
+    <div class="slot" data-i="3"></div>
+  </div>
+
+  <div class="pad" id="pad">
+    <button class="btn red"    data-c="red">RED</button>
+    <button class="btn yellow" data-c="yellow">YELLOW</button>
+    <button class="btn purple" data-c="purple">PURPLE</button>
+    <button class="btn blue"   data-c="blue">BLUE</button>
+  </div>
+
+  <div class="row">
+    <button class="mini" id="clear">↺ Clear</button>
+  </div>
+  <div class="hint" id="hint"></div>
+
+  <div id="ov">
+    <div class="sync" id="syncTxt">SYNCING…</div>
+    <div class="big" id="ovBig">EXIT OPEN</div>
+    <div class="emoji">🚪✨</div>
+    <div class="door">The Exit Door is open — you ESCAPED! Now go and find your hidden treasure!</div>
+    <button class="again" id="again">Reset terminal</button>
+  </div>
+
+<script>
+  const CODE = <?php echo json_encode($EXIT_CODE); ?>;
+  const COLORS = {red:'#ff4d57',yellow:'#ffd23f',purple:'#b06bff',blue:'#3ba7ff'};
+  let entry = [];
+  let fails = 0;
+
+  const slots = [...document.querySelectorAll('.slot')];
+  const hint = document.getElementById('hint');
+  const prompt = document.getElementById('prompt');
+  const ov = document.getElementById('ov');
+
+  function render(){
+    slots.forEach((s,i)=>{
+      if(entry[i]){ s.classList.add('fill'); s.style.background=COLORS[entry[i]]; s.style.color=COLORS[entry[i]];}
+      else { s.classList.remove('fill'); s.style.background='#160b2e'; s.style.color='transparent';}
+    });
+  }
+  function clear(){ entry=[]; render(); }
+
+  document.getElementById('pad').addEventListener('click',e=>{
+    const c = e.target.dataset.c; if(!c) return;
+    if(entry.length>=4) return;
+    entry.push(c); render();
+    beep(c);
+    if(entry.length===4) check();
+  });
+  document.getElementById('clear').addEventListener('click',clear);
+
+  function check(){
+    const ok = entry.every((c,i)=>c===CODE[i]);
+    // Un-loseable: after 2 wrong tries, the next full 4-tap sequence wins no matter what.
+    if(ok || fails>=2){ win(); }
+    else {
+      fails++;
+      document.body.classList.add('shake');
+      setTimeout(()=>document.body.classList.remove('shake'),400);
+      prompt.textContent = 'GLITCH! Try again…';
+      if(fails>=2){
+        hint.innerHTML = 'Hint: the order is <b style="color:#ff4d57">RED</b> → <b style="color:#ffd23f">YELLOW</b> → <b style="color:#b06bff">PURPLE</b> → <b style="color:#3ba7ff">BLUE</b> — tap any 4 to open!';
+      }
+      setTimeout(()=>{ clear(); prompt.textContent='Tap the Gloink colours in order!'; }, 900);
+    }
+  }
+  function flashSlots(){
+    const cols=['#ff4d57','#ffd23f','#b06bff','#3ba7ff'];
+    slots.forEach((s,i)=>{ s.classList.add('fill'); });
+    let k=0; const fl=setInterval(()=>{
+      slots.forEach((s,i)=>{ const c=cols[(i+k)%4]; s.style.background=c; s.style.color=c; });
+      if(++k>10) clearInterval(fl);
+    },90);
+  }
+
+  function win(){
+    prompt.textContent='CODE ACCEPTED!';
+    flashSlots();
+    const sync = document.getElementById('syncTxt');
+    ov.classList.add('show');
+    sync.textContent='SYNCING…';
+    let dots=0;
+    const t=setInterval(()=>{ dots=(dots+1)%4; sync.textContent='SYNCING'+'.'.repeat(dots); },180);
+    setTimeout(()=>{ clearInterval(t); sync.textContent='✓ EXIT FOUND'; confetti(); }, 1500);
+  }
+
+  document.getElementById('again').addEventListener('click',()=>{
+    ov.classList.remove('show'); fails=0; hint.textContent=''; clear();
+    prompt.textContent='Tap the Gloink colours in order!';
+  });
+
+  /* simple beep using WebAudio (works after first tap) */
+  let actx;
+  const tones={red:330,yellow:392,purple:494,blue:587};
+  function beep(c){
+    try{
+      actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+      const o=actx.createOscillator(), g=actx.createGain();
+      o.type='triangle'; o.frequency.value=tones[c]||440;
+      g.gain.setValueAtTime(.0001,actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(.25,actx.currentTime+.01);
+      g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.25);
+      o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime+.26);
+    }catch(e){}
+  }
+
+  function confetti(){
+    const cols=['#ff4d57','#ffd23f','#b06bff','#3ba7ff','#26e6ff','#ff3ba7'];
+    for(let i=0;i<80;i++){
+      const d=document.createElement('div'); d.className='conf';
+      d.style.left=Math.random()*100+'vw';
+      d.style.background=cols[i%cols.length];
+      d.style.transform='rotate('+Math.random()*360+'deg)';
+      document.body.appendChild(d);
+      const fall=2000+Math.random()*1500, drift=(Math.random()-.5)*200;
+      d.animate([
+        {transform:'translate(0,0) rotate(0deg)',opacity:1},
+        {transform:'translate('+drift+'px,110vh) rotate(720deg)',opacity:1}
+      ],{duration:fall,easing:'ease-in'});
+      setTimeout(()=>d.remove(),fall);
+    }
+  }
+  render();
+</script>
+</body>
+</html>
